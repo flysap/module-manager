@@ -1,0 +1,21 @@
+{
+    "name": "flysap/module-manager",
+    "description": "SMG",
+    "require": {
+        "flysap/administrator": "dev-master",
+        "laravel/framework": "~5.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Radu",
+            "email": "radu.bordei89@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Flysap\\ModuleManger\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
