@@ -11,18 +11,13 @@ use Symfony\Component\Yaml\Yaml;
 
 class ModuleServiceProvider extends ServiceProvider {
 
+    /**
+     * On boot's application load package requirements .
+     */
     public function boot() {
-        if (! $this->app->routesAreCached()) {
-            require __DIR__.'/../routes.php';
-        }
-
-        $array = Yaml::parse(file_get_contents(
-            __DIR__ . '/../resources/configuration/general.yaml'
-        ));
-
-        $config = $this->app['config']->get('module-manager', []);
-
-        $this->app['config']->set('module-manager', array_merge($array, $config));
+        $this->loadRoutes()
+            ->loadConfiguration()
+            ->loadViews();
     }
 
     /**
@@ -50,5 +45,34 @@ class ModuleServiceProvider extends ServiceProvider {
                new Filesystem(), new Finder()
            );
         });
+    }
+
+    protected function loadRoutes() {
+        if (! $this->app->routesAreCached()) {
+            require __DIR__.'/../routes.php';
+        }
+
+        return $this;
+    }
+
+    protected function loadConfiguration() {
+        $array = Yaml::parse(file_get_contents(
+            __DIR__ . '/../resources/configuration/general.yaml'
+        ));
+
+        $config = $this->app['config']->get('module-manager', []);
+
+        $this->app['config']->set('module-manager', array_merge($array, $config));
+
+        return $this;
+    }
+
+    /**
+     * Load views .
+     */
+    protected function loadViews() {
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'module-manager');
+
+        return $this;
     }
 }
