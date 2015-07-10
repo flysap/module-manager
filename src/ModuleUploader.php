@@ -75,14 +75,13 @@ class ModuleUploader {
         $storagePath = $this->getStoragePath();
 
         /** Check if path exists, other case create one . */
-        if( $this->fileSystem->exists(
+        /*if( $this->fileSystem->exists(
             $storagePath
         ) )
             $this->fileSystem->mkdir(
                 $storagePath
             );
 
-        /** Change mode . */
         $this->fileSystem->chmod(
             $storagePath, 0777, false
         );
@@ -95,9 +94,9 @@ class ModuleUploader {
 
         $uploaded = $this->extract(
             $uploaded
-        );
+        );*/
 
-        return $uploaded;
+        return 1;
 
         #@todo
          /**
@@ -118,9 +117,9 @@ class ModuleUploader {
      * @throws ModuleUploaderException
      */
     protected function getStoragePath() {
-        $path = config('module-manager::module_path');
+        $path = config('module-manager.module_path');
 
-        if(! $path || $path == '')
+        if(! $path || $path == '' )
             throw new ModuleUploaderException(
                 _("Cannot fine storage path for modules.")
             );
@@ -135,7 +134,7 @@ class ModuleUploader {
      * @return bool
      * @throws ModuleUploaderException
      */
-    protected function validate(UploadedFile $module) {
+    protected function getModuleConfiguration(UploadedFile $module) {
         $zip = new ZipArchive();
 
         /**
@@ -146,8 +145,33 @@ class ModuleUploader {
          */
 
         if ($zip->open($module)) {
+
+            $isFoundConfigFile = false;
+
+            for( $i = 0; $i < $zip->numFiles; $i++ ) {
+                $stat = $zip->statIndex( $i );
+
+                if( preg_match('/module.ini/', $stat['name'] ) ) {
+                    $isFoundConfigFile = true;
+
+                    $moduleFile = $stat['name'];
+                }
+            }
+
+            if(! $isFoundConfigFile)
+                throw new ModuleUploaderException(
+                    _("Nof found module config file")
+                );
+
+
+
+
+            $fileModule = parse_ini_string(
+                $zip->getFromName($moduleFile)
+            );
+
             $isModuleFileExists = $zip->extractTo(
-                storage_path(self::TMP_UPLOAD), ['module.ini']
+                app_path('../' . $this->getStoragePath() . DIRECTORY_SEPARATOR . $fileModule['name'])
             );
 
             $zip->close();
