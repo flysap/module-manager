@@ -2,9 +2,10 @@
 
 namespace Flysap\ModuleManger;
 
+use Flysap\ModuleManger\Contracts\ModuleRepositoryContract;
 use Illuminate\Database\Eloquent\Model;
 
-class ModuleRepository extends Model {
+class ModuleRepository extends Model implements ModuleRepositoryContract {
 
     use ScopeTrait;
 

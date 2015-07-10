@@ -16,7 +16,7 @@ Route::group(['prefix' => 'module-manager'], function() {
     Route::get('list/{page?}', function() {
         $service = app(ModuleServiceContract::class);
 
-        return $service->list();
+        return $service->show();
     });
 
     Route::get('remove/{module}', function() {

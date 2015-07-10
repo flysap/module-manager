@@ -7,11 +7,22 @@ use Flysap\ModuleManger\Contracts\ModuleServiceContract;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Yaml;
 
 class ModuleServiceProvider extends ServiceProvider {
 
     public function boot() {
-        $this->mergeConfigFrom(__DIR__ . '../configuration/general.yaml', 'module-manager');
+        if (! $this->app->routesAreCached()) {
+            require __DIR__.'/../routes.php';
+        }
+
+        $array = Yaml::parse(file_get_contents(
+            __DIR__ . '/../configuration/general.yaml'
+        ));
+
+        $config = $this->app['config']->get('module-manager', []);
+
+        $this->app['config']->set('module-manager', array_merge($array, $config));
     }
 
     /**

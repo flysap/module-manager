@@ -51,4 +51,16 @@ class ModuleService implements ModuleServiceContract {
         // TODO: Implement remove() method.
     }
 
+    /**
+     * Show list of modules .
+     *
+     * @return mixed
+     */
+    public function show() {
+        $modules = $this->moduleRepository
+            ->modules();
+
+        return $modules;
+    }
+
 }
