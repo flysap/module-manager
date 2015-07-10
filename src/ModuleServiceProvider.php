@@ -17,7 +17,7 @@ class ModuleServiceProvider extends ServiceProvider {
         }
 
         $array = Yaml::parse(file_get_contents(
-            __DIR__ . '/../configuration/general.yaml'
+            __DIR__ . '/../resources/configuration/general.yaml'
         ));
 
         $config = $this->app['config']->get('module-manager', []);

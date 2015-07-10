@@ -7,11 +7,11 @@ Route::group(['prefix' => 'module-manager'], function() {
     /**
      * Route for module installation
      */
-    Route::post('upload', function() {
+    Route::post('upload', ['as' => 'module-upload', function() {
         $service = app(ModuleServiceContract::class);
 
         return $service->install();
-    });
+    }]);
 
     Route::get('list/{page?}', function() {
         $service = app(ModuleServiceContract::class);
