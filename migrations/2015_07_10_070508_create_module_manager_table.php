@@ -11,7 +11,7 @@ class CreateModuleManagerTable extends Migration {
      * @return void
      */
     public function up() {
-        Schema::table('modules', function(Blueprint $table) {
+        Schema::create('modules', function(Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->decimal('version');
