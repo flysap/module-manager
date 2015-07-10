@@ -32,6 +32,8 @@ use ZipArchive;
  */
 class ModuleUploader {
 
+    const TMP_UPLOAD = 'app/modules';
+
     /**
      * @var \Symfony\Component\Filesystem\Filesystem
      */
@@ -61,13 +63,14 @@ class ModuleUploader {
      */
     public function upload(UploadedFile $module) {
 
-        if(! in_array( $this->extensions, $module->guessClientExtension() ))
+        $exntension = ! is_null( $module->guessClientExtension() ) ? $module->guessClientExtension() : $module->getClientOriginalExtension();
+
+        if(! in_array( $exntension, $this->extensions ))
             throw new ModuleUploaderException(
                 _('Invalid module format.')
             );
 
-        if(! $this->isValid($module))
-            throw new ModuleUploaderException(_("Error: can't get module info file."));
+        $this->validate($module);
 
         $storagePath = $this->getStoragePath();
 
@@ -132,16 +135,34 @@ class ModuleUploader {
      * @return bool
      * @throws ModuleUploaderException
      */
-    protected function isValid(UploadedFile $module) {
+    protected function validate(UploadedFile $module) {
         $zip = new ZipArchive();
 
-        if ($zip->open($module))
-            $moduleInfo = $zip->getStream('module.info');
+        /**
+         * 1. go into the first level folder and find file module.ini
+         * 2. parse that file and check for name.
+         * 3. use filesystem object to check for that directory if that module isn't instsalled already
+         * 4. extract archive directly to vendor_name
+         */
 
-        if(! $moduleInfo)
-            return false;
+        if ($zip->open($module)) {
+            $isModuleFileExists = $zip->extractTo(
+                storage_path(self::TMP_UPLOAD), ['module.ini']
+            );
 
-        return true;
+            $zip->close();
+
+            if( ! $isModuleFileExists )
+                throw new ModuleUploaderException(
+                    _("Module file mismatch.")
+                );
+
+            return true;
+        }
+
+        throw new ModuleUploaderException(
+            _("Archive open error")
+        );
     }
 
     /**

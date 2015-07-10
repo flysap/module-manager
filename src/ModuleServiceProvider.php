@@ -32,18 +32,18 @@ class ModuleServiceProvider extends ServiceProvider {
             return new ModuleRepository();
         });
 
-        /** Register module manager service layer . */
-        $this->app->singleton(ModuleServiceContract::class, function($app) {
-            return new ModuleService(
-                $app[ModuleRepositoryContract::class]
-            );
-        });
-
         /** Module uploader . */
         $this->app->singleton('module-uploader', function() {
            return new ModuleUploader(
                new Filesystem(), new Finder()
            );
+        });
+
+        /** Register module manager service layer . */
+        $this->app->singleton(ModuleServiceContract::class, function($app) {
+            return new ModuleService(
+                $app[ModuleRepositoryContract::class], $app['module-uploader']
+            );
         });
     }
 

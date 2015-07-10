@@ -8,11 +8,13 @@ Route::group(['prefix' => 'module-manager'], function() {
     /**
      * Route for module installation
      */
-    Route::match(['upload', 'get'], '/upload', ['as' => 'module-upload', function(Request $request) {
+    Route::match(['post', 'get'], '/upload', ['as' => 'module-upload', function(Request $request) {
         $service = app(ModuleServiceContract::class);
 
-        if( $request->method() == 'post' )
-            return $service->install();
+        if( $request->method() == 'POST' )
+            return $service->install(
+                $request->file('module')
+            );
 
         return view('module-manager::upload');
     }]);

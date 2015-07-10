@@ -13,24 +13,33 @@ class ModuleService implements ModuleServiceContract {
      */
     protected $moduleRepository;
 
-    public function __construct(ModuleRepositoryContract $moduleRepository) {
+    /**
+     * @var ModuleUploader
+     */
+    private $moduleUploader;
+
+    public function __construct(ModuleRepositoryContract $moduleRepository, ModuleUploader $moduleUploader) {
         $this->moduleRepository = $moduleRepository;
+        $this->moduleUploader = $moduleUploader;
     }
 
     /**
      * Install module ..
      *
+     * @param UploadedFile $module
      * @return mixed
+     * @throws Exceptions\ModuleUploaderException
      */
     public function install(UploadedFile $module) {
-        /**
-         * Get the name from module info
-         * Check if that name is installed in database
-         * Throw an exception if is installed
-         * Call ModuleUploader to upload to specific folder
-         * Register it to database
-         * Mark as inactive.
-         */
+        if( $module = $this->moduleUploader
+            ->upload($module) ) {
+
+            $this->moduleRepository
+                ->create([
+                   'name' => $module->getClientOriginalName(),
+                   'active' => 0
+                ]);
+        }
     }
 
     /**
