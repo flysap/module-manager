@@ -2,6 +2,8 @@
 
 namespace Flysap\ModuleManger\Contracts;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 interface ModuleServiceContract {
 
     /**
@@ -9,7 +11,7 @@ interface ModuleServiceContract {
      *
      * @return mixed
      */
-    public function install();
+    public function install(UploadedFile $module);
 
     /**
      * Upgrade module .

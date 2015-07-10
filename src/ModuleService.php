@@ -4,6 +4,7 @@ namespace Flysap\ModuleManger;
 
 use Flysap\ModuleManger\Contracts\ModuleRepositoryContract;
 use Flysap\ModuleManger\Contracts\ModuleServiceContract;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ModuleService implements ModuleServiceContract {
 
@@ -21,8 +22,15 @@ class ModuleService implements ModuleServiceContract {
      *
      * @return mixed
      */
-    public function install() {
-        // TODO: Implement install() method.
+    public function install(UploadedFile $module) {
+        /**
+         * Get the name from module info
+         * Check if that name is installed in database
+         * Throw an exception if is installed
+         * Call ModuleUploader to upload to specific folder
+         * Register it to database
+         * Mark as inactive.
+         */
     }
 
     /**
