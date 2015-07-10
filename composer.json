@@ -4,10 +4,10 @@
     "require": {
         "flysap/administrator": "dev-master",
         "laravel/framework": "~5.1",
-        "symfony/filesystem": "~2.8",
-        "symfony/finder": "~2.8",
-        "symfony/yaml": "~2.8",
-        "symfony/http-foundation": "~2.8"
+        "symfony/filesystem": "~2.7",
+        "symfony/finder": "~2.7",
+        "symfony/yaml": "~2.7",
+        "symfony/http-foundation": "~2.7"
     },
     "license": "MIT",
     "authors": [
