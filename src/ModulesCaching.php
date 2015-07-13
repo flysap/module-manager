@@ -37,12 +37,56 @@ class ModulesCaching {
      * Walk through module ini files parse and cache it ..
      */
     public function flush() {
-        $modules  = [];
+        $modules = $this->findModulesConfig();
 
+        $fullCachePath = app_path(
+            '..' . DIRECTORY_SEPARATOR . $this->getCachePath()
+        );
+
+        if(! $this->filesystem->exists( $fullCachePath))
+            $this->filesystem->mkdir(
+                $fullCachePath
+            );
+
+        $this->filesystem
+            ->dumpFile($fullCachePath . DIRECTORY_SEPARATOR . self::CACHE_FILE, json_encode($modules));
+
+        return $this;
+    }
+
+    /**
+     * Clear cache file .
+     *
+     * @return $this
+     * @throws ModuleUploaderException
+     */
+    public function clear() {
+        $fullCachePath = app_path(
+            '..' . DIRECTORY_SEPARATOR . $this->getCachePath()
+        );
+
+        if( $this->filesystem->exists( $fullCachePath))
+            $this->filesystem->remove([
+                $fullCachePath . DIRECTORY_SEPARATOR . self::CACHE_FILE
+            ]);
+
+        return $this;
+    }
+
+    /**
+     * Find modules configuration files .
+     *
+     * @return array
+     * @throws ModuleUploaderException
+     */
+    protected function findModulesConfig() {
+        $name     = '/module.(\w{1,3})$/';
         $fullPath = app_path('..' . DIRECTORY_SEPARATOR . $this->getStoragePath());
 
-        $finder = $this->finder;
-        $finder->name('/module.(\w{1,3})$/')
+        $modules = [];
+        $finder  = $this->finder;
+
+        $finder->name($name)
             ->depth('< 3');
 
         foreach ($finder->in($fullPath) as $file) {
@@ -53,23 +97,7 @@ class ModulesCaching {
                 $modules[$module['name']] = $module;
         }
 
-        $fullCachePath = app_path(
-            '..' . DIRECTORY_SEPARATOR . $this->getCachePath()
-        );
-
-
-        if(! $this->filesystem->exists(
-            $fullCachePath
-        )) {
-            $this->filesystem->mkdir(
-                $fullCachePath
-            );
-        }
-
-        $this->filesystem
-            ->dumpFile($fullCachePath . DIRECTORY_SEPARATOR . self::CACHE_FILE, json_encode($modules));
-
-        return $this;
+        return $modules;
     }
 
     /**
