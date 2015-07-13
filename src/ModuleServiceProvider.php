@@ -45,6 +45,13 @@ class ModuleServiceProvider extends ServiceProvider {
                 $app[ModuleRepositoryContract::class], $app['module-uploader']
             );
         });
+
+        /** Register caching module . */
+        $this->app->singleton('module-caching', function() {
+            return new ModulesCaching(
+                new Finder(), new Filesystem(), new ParserIni()
+            );
+        });
     }
 
     /**
