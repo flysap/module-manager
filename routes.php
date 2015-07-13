@@ -14,9 +14,11 @@ Route::group(['prefix' => 'module-manager'], function() {
         if( $request->method() == 'POST' ) {
             if( $service->install(
                 $request->file('module')
-            ) )
-                return redirect()
-                    ->back();
+            ) ) {
+                return redirect(
+                    route('module-lists')
+                );
+            }
         }
 
         return view('module-manager::upload');

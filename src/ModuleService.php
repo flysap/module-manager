@@ -40,6 +40,8 @@ class ModuleService implements ModuleServiceContract {
                    'path'   => $configuration['path'],
                    'active' => $configuration['version']
                 ]);
+
+            return true;
         }
     }
 
