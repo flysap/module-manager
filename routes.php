@@ -12,9 +12,11 @@ Route::group(['prefix' => 'module-manager'], function() {
         $service = app(ModuleServiceContract::class);
 
         if( $request->method() == 'POST' )
-            return $service->install(
+            if( $service->install(
                 $request->file('module')
-            );
+            ) )
+                return redirect()
+                    ->back();
 
         return view('module-manager::upload');
     }]);
