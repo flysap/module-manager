@@ -11,22 +11,34 @@ Route::group(['prefix' => 'module-manager'], function() {
     Route::match(['post', 'get'], '/upload', ['as' => 'module-upload', function(Request $request) {
         $service = app(ModuleServiceContract::class);
 
-        if( $request->method() == 'POST' )
+        if( $request->method() == 'POST' ) {
             if( $service->install(
                 $request->file('module')
             ) )
                 return redirect()
                     ->back();
+        }
 
         return view('module-manager::upload');
     }]);
 
-    Route::get('list/{page?}', function() {
+    /**
+     * Route for lists module ..
+     */
+    Route::get('lists/{page?}', ['as' => 'module-lists', function() {
         $service = app(ModuleServiceContract::class);
 
-        return $service->show();
-    });
+        $modules = $service->modules();
 
+        dd($modules);
+
+        return view('module-manager::lists', ['modules' => $modules]);
+    }]);
+
+    /**
+     * Route for remove module .
+     *
+     */
     Route::get('remove/{module}', function() {
         $service = app(ModuleServiceContract::class);
 

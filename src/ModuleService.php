@@ -66,7 +66,7 @@ class ModuleService implements ModuleServiceContract {
      *
      * @return mixed
      */
-    public function show() {
+    public function modules() {
         $modules = $this->moduleRepository
             ->modules();
 
