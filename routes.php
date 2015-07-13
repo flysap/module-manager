@@ -30,8 +30,6 @@ Route::group(['prefix' => 'module-manager'], function() {
 
         $modules = $service->modules();
 
-        dd($modules);
-
         return view('module-manager::lists', ['modules' => $modules]);
     }]);
 
