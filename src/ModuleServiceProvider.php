@@ -35,7 +35,7 @@ class ModuleServiceProvider extends ServiceProvider {
         /** Module uploader . */
         $this->app->singleton('module-uploader', function() {
            return new ModuleUploader(
-               new Filesystem(), new Finder()
+               new Filesystem(), new Finder(), new ParserIni()
            );
         });
 
