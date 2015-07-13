@@ -9,18 +9,18 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ModuleService implements ModuleServiceContract {
 
     /**
-     * @var Contracts\ModuleRepositoryContract
-     */
-    protected $moduleRepository;
-
-    /**
      * @var ModuleUploader
      */
     private $moduleUploader;
 
-    public function __construct(ModuleRepositoryContract $moduleRepository, ModuleUploader $moduleUploader) {
-        $this->moduleRepository = $moduleRepository;
+    /**
+     * @var ModulesCaching
+     */
+    private $modulesCaching;
+
+    public function __construct(ModulesCaching $modulesCaching, ModuleUploader $moduleUploader) {
         $this->moduleUploader = $moduleUploader;
+        $this->modulesCaching = $modulesCaching;
     }
 
     /**
@@ -34,12 +34,8 @@ class ModuleService implements ModuleServiceContract {
         if( $configuration = $this->moduleUploader
             ->upload($module) ) {
 
-            $this->moduleRepository
-                ->create([
-                   'name'   => $configuration['name'],
-                   'path'   => $configuration['path'],
-                   'active' => $configuration['version']
-                ]);
+            $this->modulesCaching
+                ->flush();
 
             return true;
         }
@@ -69,10 +65,7 @@ class ModuleService implements ModuleServiceContract {
      * @return mixed
      */
     public function modules() {
-        $modules = $this->moduleRepository
-            ->modules();
-
-        return $modules;
+        return [];
     }
 
 }
