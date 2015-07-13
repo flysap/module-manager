@@ -2,6 +2,7 @@
 
 namespace Flysap\ModuleManger;
 
+use Flysap\ModuleManger\Contracts\ConfigParserContract;
 use Flysap\ModuleManger\Exceptions\ModuleUploaderException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -11,28 +12,10 @@ use ZipArchive;
 /**
  * Module uploader processing ..
  *
- *  Will need to have an configuration file where will be listed store path for modules like:
- *     module_store: path_to_store
- *
- *  On installation module vendor:publish command will be called which will copy file to configuration folder
- *      and give the posibility to administrator to redact that file.. (Of sure all operations will be made from BE)
- *
- *  All the modules will have next folder structure
- *      --> folder
- *          --> vendor
- *              --> package
- *                     --> files
- *
- *  Before module installation need to check it for some standarts of .
- *
- *
- *
  * Class ModuleUploader
  * @package Flysap\ModuleManger
  */
 class ModuleUploader {
-
-    const TMP_UPLOAD = 'app/modules';
 
     /**
      * @var \Symfony\Component\Filesystem\Filesystem
@@ -49,9 +32,20 @@ class ModuleUploader {
      */
     protected $extensions = ['zip'];
 
-    public function __construct(FileSystem $fileSystem, Finder $finder) {
+    /**
+     * @var ConfigParserContract
+     */
+    protected $configParser;
+
+    /**
+     * @var
+     */
+    protected $archiver;
+
+    public function __construct(FileSystem $fileSystem, Finder $finder, ConfigParserContract $configParser) {
         $this->fileSystem = $fileSystem;
-        $this->finder     = $finder;
+        $this->finder = $finder;
+        $this->configParser = $configParser;
     }
 
     /**
@@ -62,53 +56,55 @@ class ModuleUploader {
      * @throws ModuleUploaderException
      */
     public function upload(UploadedFile $module) {
+        $extension = null;
 
-        $exntension = ! is_null( $module->guessClientExtension() ) ? $module->guessClientExtension() : $module->getClientOriginalExtension();
+        if (! $extension = $module->guessClientExtension())
+            $extension = $module->getClientOriginalExtension();
 
-        if(! in_array( $exntension, $this->extensions ))
+
+        if (! in_array($extension, $this->extensions))
             throw new ModuleUploaderException(
                 _('Invalid module format.')
             );
 
-        $this->validate($module);
 
-        $storagePath = $this->getStoragePath();
-
-        /** Check if path exists, other case create one . */
-        /*if( $this->fileSystem->exists(
-            $storagePath
-        ) )
-            $this->fileSystem->mkdir(
-                $storagePath
+        if(! $configuration = $this->getConfig($module))
+            throw new ModuleUploaderException(
+                _("Nof found module config file")
             );
 
-        $this->fileSystem->chmod(
-            $storagePath, 0777, false
+
+        return $this->extract(
+            $module, app_path( '../' . $this->getStoragePath() . DIRECTORY_SEPARATOR . $configuration['name'] )
+        );
+    }
+
+    /**
+     * Extract archive to specific path .
+     *
+     * @param $module
+     * @param null $path
+     * @return mixed | Path where module was uploaded .
+     * @throws ModuleUploaderException
+     */
+    protected function extract($module, $path = null) {
+        /** Check if path exists, other case create one . */
+        if (! $this->fileSystem->exists($path) ) {
+            $this->fileSystem->mkdir(
+                $path
+            );
+        }
+
+        $archiver = $this->getArchiver();
+        $archiver->open($module);
+
+        $archiver->extractTo(
+            $path
         );
 
-
-        if( ! $uploaded = $module->move(
-            $storagePath
-        ) )
-            throw new ModuleUploaderException(_("Error on upload module."));
-
-        $uploaded = $this->extract(
-            $uploaded
-        );*/
-
-        return 1;
-
-        #@todo
-         /**
-          * 1 . Check if module has specific format to be uploaded
-          * 2. Check for require module.info file (Here will be described all data about current module like title, description, version)
-          * 3. Check if store path from config file has access to write .
-          * 4. Check if folder exists, if not create one ..
-          * 5. Check if module hasn't uploaded yet (use finder)
-          * 6. Copy file to store path directory
-          * 7. Return path to stored path ..
-          */
+        return $path;
     }
+
 
     /**
      * Get storage path .
@@ -119,7 +115,7 @@ class ModuleUploader {
     protected function getStoragePath() {
         $path = config('module-manager.module_path');
 
-        if(! $path || $path == '' )
+        if (! $path || $path == '')
             throw new ModuleUploaderException(
                 _("Cannot fine storage path for modules.")
             );
@@ -128,75 +124,43 @@ class ModuleUploader {
     }
 
     /**
-     * Validate module .
+     * Get configuration file .
      *
      * @param UploadedFile $module
-     * @return bool
-     * @throws ModuleUploaderException
+     * @return mixed
      */
-    protected function getModuleConfiguration(UploadedFile $module) {
-        $zip = new ZipArchive();
+    protected function getConfig(UploadedFile $module) {
+        $archiver = $this->getArchiver();
 
-        /**
-         * 1. go into the first level folder and find file module.ini
-         * 2. parse that file and check for name.
-         * 3. use filesystem object to check for that directory if that module isn't instsalled already
-         * 4. extract archive directly to vendor_name
-         */
-
-        if ($zip->open($module)) {
+        if ($archiver->open($module)) {
 
             $isFoundConfigFile = false;
 
-            for( $i = 0; $i < $zip->numFiles; $i++ ) {
-                $stat = $zip->statIndex( $i );
+            for ($i = 0; $i < $archiver->numFiles; $i++) {
+                $stat = $archiver->statIndex($i);
 
-                if( preg_match('/module.ini/', $stat['name'] ) ) {
+                if (preg_match('/module.(\w{1,3})$/', $stat['name'])) {
                     $isFoundConfigFile = true;
 
                     $moduleFile = $stat['name'];
                 }
             }
 
-            if(! $isFoundConfigFile)
-                throw new ModuleUploaderException(
-                    _("Nof found module config file")
+            if ($isFoundConfigFile)
+                return $this->configParser->parse(
+                    $archiver->getFromName($moduleFile)
                 );
-
-
-
-
-            $fileModule = parse_ini_string(
-                $zip->getFromName($moduleFile)
-            );
-
-            $isModuleFileExists = $zip->extractTo(
-                app_path('../' . $this->getStoragePath() . DIRECTORY_SEPARATOR . $fileModule['name'])
-            );
-
-            $zip->close();
-
-            if( ! $isModuleFileExists )
-                throw new ModuleUploaderException(
-                    _("Module file mismatch.")
-                );
-
-            return true;
         }
-
-        throw new ModuleUploaderException(
-            _("Archive open error")
-        );
     }
 
     /**
-     * Extract module archive .
-     *
-     * @param $uploaded
-     * @param null $path
+     * @return ZipArchive
      */
-    protected function extract($uploaded, $path = null) {
-        return $uploaded;
+    protected function getArchiver() {
+        if (! $this->archiver)
+            $this->archiver = new ZipArchive();
+
+        return $this->archiver;
     }
 
 }
