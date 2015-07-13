@@ -1,2 +1,5 @@
 # here will be declared module folder
 module_path: modules
+
+# here will be declared cache folder .
+cache_dir: bootstrap/cache
