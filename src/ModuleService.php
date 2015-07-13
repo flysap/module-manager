@@ -31,13 +31,14 @@ class ModuleService implements ModuleServiceContract {
      * @throws Exceptions\ModuleUploaderException
      */
     public function install(UploadedFile $module) {
-        if( $module = $this->moduleUploader
+        if( $configuration = $this->moduleUploader
             ->upload($module) ) {
 
             $this->moduleRepository
                 ->create([
-                   'name' => $module->getClientOriginalName(),
-                   'active' => 0
+                   'name'   => $configuration['name'],
+                   'path'   => $configuration['path'],
+                   'active' => $configuration['version']
                 ]);
         }
     }
