@@ -13,6 +13,8 @@ class ModuleRepository extends Model implements ModuleRepositoryContract {
 
     public $timestamps = false;
 
+    public $fillable = ['name', 'version', 'path', 'is_active'];
+
     /**
      * Get all modules .
      *
