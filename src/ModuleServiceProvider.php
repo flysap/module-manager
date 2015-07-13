@@ -47,6 +47,11 @@ class ModuleServiceProvider extends ServiceProvider {
         });
     }
 
+    /**
+     * Load routes .
+     *
+     * @return $this
+     */
     protected function loadRoutes() {
         if (! $this->app->routesAreCached()) {
             require __DIR__.'/../routes.php';
@@ -55,6 +60,11 @@ class ModuleServiceProvider extends ServiceProvider {
         return $this;
     }
 
+    /**
+     * Load configuration .
+     *
+     * @return $this
+     */
     protected function loadConfiguration() {
         $array = Yaml::parse(file_get_contents(
             __DIR__ . '/../resources/configuration/general.yaml'
