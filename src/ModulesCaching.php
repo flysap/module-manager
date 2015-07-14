@@ -80,11 +80,12 @@ class ModulesCaching implements Arrayable {
     public function toArray(array $modules = array()) {
         $fullCachePath = $this->getCachePath(true);
 
-        $cache = '';
-        if( $this->filesystem->exists( $fullCachePath))
-            $cache = file_get_contents(
-                $fullCachePath . DIRECTORY_SEPARATOR . self::CACHE_FILE
-            );
+        if( ! $this->filesystem->exists( $fullCachePath . DIRECTORY_SEPARATOR . self::CACHE_FILE ))
+            $this->flush();
+
+        $cache = file_get_contents(
+            $fullCachePath . DIRECTORY_SEPARATOR . self::CACHE_FILE
+        );
 
         $cache = json_decode($cache, true);
 
@@ -102,7 +103,7 @@ class ModulesCaching implements Arrayable {
      */
     protected function findModulesConfig() {
         $name     = '/module.(\w{1,3})$/';
-        $fullPath = $this->getStoragePath();
+        $fullPath = $this->getStoragePath(true);
 
         $modules = [];
         $finder  = $this->finder;
@@ -114,8 +115,8 @@ class ModulesCaching implements Arrayable {
             $module = $this->configParser
                 ->parse( $file->getContents() );
 
-            if( isset($module['name']) )
-                $modules[$module['name']] = $module;
+            if( isset($module['general']['name']) )
+                $modules[$module['general']['name']] = $module;
         }
 
         return $modules;
@@ -162,7 +163,5 @@ class ModulesCaching implements Arrayable {
 
         return $path;
     }
-
-
 
 }
