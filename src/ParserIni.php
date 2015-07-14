@@ -14,7 +14,7 @@ class ParserIni implements ConfigParserContract {
      */
     public function parse($file) {
         return parse_ini_string(
-            $file
+            $file, true, INI_SCANNER_NORMAL
         );
     }
 }
