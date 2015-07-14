@@ -73,7 +73,7 @@ class ModuleUploader {
                 _("Nof found module config file")
             );
 
-        $path = $this->getStoragePath() . DIRECTORY_SEPARATOR . $configuration['name'];
+        $path = $this->getStoragePath() . DIRECTORY_SEPARATOR . $configuration['general']['name'];
 
         $this->extract(
             $module, app_path( '../' . $path)
