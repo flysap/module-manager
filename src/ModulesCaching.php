@@ -4,10 +4,11 @@ namespace Flysap\ModuleManger;
 
 use Flysap\ModuleManger\Contracts\ConfigParserContract;
 use Flysap\ModuleManger\Exceptions\ModuleUploaderException;
+use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-class ModulesCaching {
+class ModulesCaching implements Arrayable {
 
     const CACHE_FILE = 'modules.json';
 
@@ -39,9 +40,7 @@ class ModulesCaching {
     public function flush() {
         $modules = $this->findModulesConfig();
 
-        $fullCachePath = app_path(
-            '..' . DIRECTORY_SEPARATOR . $this->getCachePath()
-        );
+        $fullCachePath = $this->getCachePath();
 
         if(! $this->filesystem->exists( $fullCachePath))
             $this->filesystem->mkdir(
@@ -61,9 +60,7 @@ class ModulesCaching {
      * @throws ModuleUploaderException
      */
     public function clear() {
-        $fullCachePath = app_path(
-            '..' . DIRECTORY_SEPARATOR . $this->getCachePath()
-        );
+        $fullCachePath = $this->getCachePath();
 
         if( $this->filesystem->exists( $fullCachePath))
             $this->filesystem->remove([
@@ -74,6 +71,30 @@ class ModulesCaching {
     }
 
     /**
+     * Get array cached ..
+     *
+     * @param array $modules
+     * @return mixed
+     * @throws ModuleUploaderException
+     */
+    public function toArray(array $modules = array()) {
+        $fullCachePath = $this->getCachePath(true);
+
+        $cache = '';
+        if( $this->filesystem->exists( $fullCachePath))
+            $cache = file_get_contents(
+                $fullCachePath . DIRECTORY_SEPARATOR . self::CACHE_FILE
+            );
+
+        $cache = json_decode($cache, true);
+
+        if( $modules )
+            return array_intersect_key($cache, array_flip((array) $modules));
+
+        return $cache;
+    }
+
+    /**
      * Find modules configuration files .
      *
      * @return array
@@ -81,7 +102,7 @@ class ModulesCaching {
      */
     protected function findModulesConfig() {
         $name     = '/module.(\w{1,3})$/';
-        $fullPath = app_path('..' . DIRECTORY_SEPARATOR . $this->getStoragePath());
+        $fullPath = $this->getStoragePath();
 
         $modules = [];
         $finder  = $this->finder;
@@ -106,13 +127,16 @@ class ModulesCaching {
      * @return mixed
      * @throws ModuleUploaderException
      */
-    protected function getStoragePath() {
+    protected function getStoragePath($asFull = true) {
         $path = config('module-manager.module_path');
 
         if (! $path || $path == '')
             throw new ModuleUploaderException(
                 _("Cannot fine storage path for modules.")
             );
+
+        if($asFull)
+            $path = app_path('..' . DIRECTORY_SEPARATOR . $path);
 
         return $path;
     }
@@ -123,7 +147,7 @@ class ModulesCaching {
      * @return mixed
      * @throws ModuleUploaderException
      */
-    protected function getCachePath() {
+    protected function getCachePath($asFull = true) {
         $path = config('module-manager.cache_dir');
 
         if (! $path || $path == '')
@@ -131,7 +155,14 @@ class ModulesCaching {
                 _("Cannot fine cache path for modules.")
             );
 
+        if( $asFull )
+            $path = app_path(
+                '..' . DIRECTORY_SEPARATOR . $path
+            );
+
         return $path;
     }
+
+
 
 }
