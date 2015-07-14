@@ -65,7 +65,9 @@ class ModuleService implements ModuleServiceContract {
      * @return mixed
      */
     public function modules() {
-        return [];
-    }
+        $modules = $this->modulesCaching
+            ->toArray();
 
+        return $modules;
+    }
 }
