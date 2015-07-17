@@ -2,7 +2,6 @@
 
 namespace Flysap\ModuleManger;
 
-use Flysap\ModuleManger\Contracts\ModuleRepositoryContract;
 use Flysap\ModuleManger\Contracts\ModuleServiceContract;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

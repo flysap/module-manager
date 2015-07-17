@@ -1,10 +1,10 @@
 <?php
 
-namespace Flysap\ModuleManger;
+namespace Flysap\ModuleManger\Parsers;
 
 use Flysap\ModuleManger\Contracts\ConfigParserContract;
 
-class ParserIni implements ConfigParserContract {
+class Ini implements ConfigParserContract {
 
     /**
      * Parse file ..
