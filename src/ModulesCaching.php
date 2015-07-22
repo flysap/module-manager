@@ -2,7 +2,6 @@
 
 namespace Flysap\ModuleManager;
 
-use Flysap\ModuleManager\Contracts\ConfigParserContract;
 use Flysap\ModuleManager\Exceptions\ModuleUploaderException;
 use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\Filesystem\Filesystem;
@@ -22,16 +21,10 @@ class ModulesCaching implements Arrayable {
      */
     private $filesystem;
 
-    /**
-     * @var ConfigParserContract
-     */
-    private $configParser;
-
-    public function __construct(Finder $finder, Filesystem $filesystem, ConfigParserContract $configParser) {
+    public function __construct(Finder $finder, Filesystem $filesystem) {
 
         $this->finder = $finder;
         $this->filesystem = $filesystem;
-        $this->configParser = $configParser;
     }
 
     /**
@@ -102,7 +95,8 @@ class ModulesCaching implements Arrayable {
      * @throws ModuleUploaderException
      */
     protected function findModulesConfig() {
-        $name     = '/module.(\w{1,3})$/';
+        $name     = '/module.(\w{1,4})$/';
+
         $fullPath = $this->getStoragePath(true);
 
         $modules = [];
@@ -112,11 +106,16 @@ class ModulesCaching implements Arrayable {
             ->depth('< 3');
 
         foreach ($finder->in($fullPath) as $file) {
-            $module = $this->configParser
+
+            $parser = ParserFactory::factory(
+                $file->getExtension()
+            );
+
+            $module = $parser
                 ->parse( $file->getContents() );
 
-            if( isset($module['general']['name']) )
-                $modules[$module['general']['name']] = $module;
+            if( isset($module['name']) )
+                $modules[$module['name']] = $module;
         }
 
         return $modules;

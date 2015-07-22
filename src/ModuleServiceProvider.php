@@ -4,7 +4,7 @@ namespace Flysap\ModuleManager;
 
 use Flysap\ModuleManager\Contracts\ModuleRepositoryContract;
 use Flysap\ModuleManager\Contracts\ModuleServiceContract;
-use Flysap\ModuleManager\Parsers\Ini;
+use Flysap\ModuleManager\Parsers\Json;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -36,14 +36,14 @@ class ModuleServiceProvider extends ServiceProvider {
         /** Module uploader . */
         $this->app->singleton('module-uploader', function() {
            return new ModuleUploader(
-               new Filesystem(), new Finder(), new Ini()
+               new Filesystem(), new Finder()
            );
         });
 
         /** Register caching module . */
         $this->app->singleton('module-caching', function() {
             return new ModulesCaching(
-                new Finder(), new Filesystem(), new Ini()
+                new Finder(), new Filesystem()
             );
         });
 

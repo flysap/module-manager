@@ -4,7 +4,7 @@ namespace Flysap\ModuleManager\Parsers;
 
 use Flysap\ModuleManager\Contracts\ConfigParserContract;
 
-class Ini implements ConfigParserContract {
+class Json implements ConfigParserContract {
 
     /**
      * Parse file ..
@@ -13,8 +13,6 @@ class Ini implements ConfigParserContract {
      * @return array
      */
     public function parse($contents) {
-        return parse_ini_string(
-            $contents, true, INI_SCANNER_NORMAL
-        );
+        return json_decode($contents, true);
     }
 }

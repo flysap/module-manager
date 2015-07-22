@@ -2,7 +2,6 @@
 
 namespace Flysap\ModuleManager;
 
-use Flysap\ModuleManager\Contracts\ConfigParserContract;
 use Flysap\ModuleManager\Exceptions\ModuleUploaderException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -33,19 +32,13 @@ class ModuleUploader {
     protected $extensions = ['zip'];
 
     /**
-     * @var ConfigParserContract
-     */
-    protected $configParser;
-
-    /**
      * @var
      */
     protected $archiver;
 
-    public function __construct(FileSystem $fileSystem, Finder $finder, ConfigParserContract $configParser) {
+    public function __construct(FileSystem $fileSystem, Finder $finder) {
         $this->fileSystem = $fileSystem;
         $this->finder = $finder;
-        $this->configParser = $configParser;
     }
 
     /**
@@ -68,12 +61,13 @@ class ModuleUploader {
             );
 
 
-        if(! $configuration = $this->getConfig($module))
+        if(! $configuration = $this->getConfiguration($module))
             throw new ModuleUploaderException(
                 _("Nof found module config file")
             );
 
-        $path = $this->getStoragePath() . DIRECTORY_SEPARATOR . $configuration['general']['name'];
+
+        $path = $this->getStoragePath() . DIRECTORY_SEPARATOR . $configuration['name'];
 
         $this->extract(
             $module, app_path( '../' . $path)
@@ -134,27 +128,24 @@ class ModuleUploader {
      * @param UploadedFile $module
      * @return mixed
      */
-    protected function getConfig(UploadedFile $module) {
+    protected function getConfiguration(UploadedFile $module) {
         $archiver = $this->getArchiver();
 
         if ($archiver->open($module)) {
 
-            $isFoundConfigFile = false;
-
             for ($i = 0; $i < $archiver->numFiles; $i++) {
                 $stat = $archiver->statIndex($i);
 
-                if (preg_match('/module.(\w{1,3})$/', $stat['name'])) {
-                    $isFoundConfigFile = true;
-
+                if (preg_match('/module.(\w{1,4})$/', $stat['name'], $matches)) {
                     $moduleFile = $stat['name'];
+
+                    $parser = ParserFactory::factory($matches[1]);
+
+                    return $parser->parse(
+                        $archiver->getFromName($moduleFile)
+                    );
                 }
             }
-
-            if ($isFoundConfigFile)
-                return $this->configParser->parse(
-                    $archiver->getFromName($moduleFile)
-                );
         }
     }
 
