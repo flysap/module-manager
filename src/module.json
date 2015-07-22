@@ -1,0 +1,20 @@
+{
+  "name" : "Module name",
+  "description" : "Module description",
+  "version" : "Module version",
+
+  "menu": [
+    {
+      "section": "Menu section",
+      "label": "Menu label",
+      "permissions": "Menu permissions",
+      "roles": "Menu roles"
+    },
+    {
+      "section": "Menu section2",
+      "label": "Menu label2",
+      "permissions": "Menu permissions2",
+      "roles": "Menu roles2"
+    }
+  ]
+}
