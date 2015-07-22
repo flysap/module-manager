@@ -1,6 +1,6 @@
 <?php
 
-use Flysap\ModuleManger\Contracts\ModuleServiceContract;
+use Flysap\ModuleManager\Contracts\ModuleServiceContract;
 use Illuminate\Http\Request;
 
 Route::group(['prefix' => 'module-manager'], function() {

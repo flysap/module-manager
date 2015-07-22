@@ -2,7 +2,7 @@
 
 namespace Flysap\ModuleManager\Parsers;
 
-use Flysap\ModuleManger\Contracts\ConfigParserContract;
+use Flysap\ModuleManager\Contracts\ConfigParserContract;
 
 class Ini implements ConfigParserContract {
 
