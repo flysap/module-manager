@@ -1,9 +1,9 @@
 <?php
 
-namespace Flysap\ModuleManger;
+namespace Flysap\ModuleManager;
 
-use Flysap\ModuleManger\Contracts\ConfigParserContract;
-use Flysap\ModuleManger\Exceptions\ModuleUploaderException;
+use Flysap\ModuleManager\Contracts\ConfigParserContract;
+use Flysap\ModuleManager\Exceptions\ModuleUploaderException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\UploadedFile;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Flysap\ModuleManger;
+namespace Flysap\ModuleManager;
 
 trait ScopeTrait {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Flysap\ModuleManger\Parsers;
+namespace Flysap\ModuleManager\Parsers;
 
 use Flysap\ModuleManger\Contracts\ConfigParserContract;
 

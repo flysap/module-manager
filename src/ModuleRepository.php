@@ -1,8 +1,8 @@
 <?php
 
-namespace Flysap\ModuleManger;
+namespace Flysap\ModuleManager;
 
-use Flysap\ModuleManger\Contracts\ModuleRepositoryContract;
+use Flysap\ModuleManager\Contracts\ModuleRepositoryContract;
 use Illuminate\Database\Eloquent\Model;
 
 class ModuleRepository extends Model implements ModuleRepositoryContract {

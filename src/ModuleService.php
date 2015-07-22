@@ -1,8 +1,8 @@
 <?php
 
-namespace Flysap\ModuleManger;
+namespace Flysap\ModuleManager;
 
-use Flysap\ModuleManger\Contracts\ModuleServiceContract;
+use Flysap\ModuleManager\Contracts\ModuleServiceContract;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ModuleService implements ModuleServiceContract {

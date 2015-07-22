@@ -1,10 +1,10 @@
 <?php
 
-namespace Flysap\ModuleManger;
+namespace Flysap\ModuleManager;
 
-use Flysap\ModuleManger\Contracts\ModuleRepositoryContract;
-use Flysap\ModuleManger\Contracts\ModuleServiceContract;
-use Flysap\ModuleManger\Parsers\Ini;
+use Flysap\ModuleManager\Contracts\ModuleRepositoryContract;
+use Flysap\ModuleManager\Contracts\ModuleServiceContract;
+use Flysap\ModuleManager\Parsers\Ini;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;

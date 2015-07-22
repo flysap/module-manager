@@ -1,6 +1,6 @@
 <?php
 
-namespace Flysap\ModuleManger\Contracts;
+namespace Flysap\ModuleManager\Contracts;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

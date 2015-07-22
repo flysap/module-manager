@@ -1,5 +1,5 @@
 <?php
 
-namespace Flysap\ModuleManger\Exceptions;
+namespace Flysap\ModuleManager\Exceptions;
 
 class ModuleServiceException extends \Exception {}

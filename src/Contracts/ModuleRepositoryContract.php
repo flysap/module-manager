@@ -1,6 +1,6 @@
 <?php
 
-namespace Flysap\ModuleManger\Contracts;
+namespace Flysap\ModuleManager\Contracts;
 
 interface ModuleRepositoryContract {
 
