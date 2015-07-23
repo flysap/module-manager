@@ -3,7 +3,6 @@
 namespace Flysap\ModuleManager;
 
 use Flysap\ModuleManager\Exceptions\ModuleUploaderException;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use ZipArchive;
@@ -14,12 +13,7 @@ use ZipArchive;
  * Class ModuleUploader
  * @package Flysap\ModuleManger
  */
-class ModuleUploader {
-
-    /**
-     * @var \Symfony\Component\Filesystem\Filesystem
-     */
-    protected $fileSystem;
+class ModuleManager {
 
     /**
      * @var \Symfony\Component\Finder\Finder
@@ -36,8 +30,7 @@ class ModuleUploader {
      */
     protected $archiver;
 
-    public function __construct(FileSystem $fileSystem, Finder $finder) {
-        $this->fileSystem = $fileSystem;
+    public function __construct(Finder $finder) {
         $this->finder = $finder;
     }
 
@@ -88,11 +81,8 @@ class ModuleUploader {
      */
     protected function extract($module, $path = null) {
         /** Check if path exists, other case create one . */
-        if (! $this->fileSystem->exists($path) ) {
-            $this->fileSystem->mkdir(
-                $path
-            );
-        }
+        if (! \Flysap\Support\is_path_exists($path) )
+            \Flysap\Support\mk_path($path);
 
         $archiver = $this->getArchiver();
         $archiver->open($module);
@@ -104,6 +94,32 @@ class ModuleUploader {
         return $path;
     }
 
+    /**
+     * Remove module ..
+     *
+     * @param $module
+     * @return $this
+     * @throws ModuleUploaderException
+     */
+    public function remove($module) {
+        list($vendor, $name) = explode('-', $module);
+
+        $path = $this->getStoragePath();
+
+        $fullPath = app_path('../' . $path . DIRECTORY_SEPARATOR);
+
+        if( \Flysap\Support\is_path_exists($fullPath . $vendor . DIRECTORY_SEPARATOR . $name) )
+            \Flysap\Support\remove_paths(
+                $fullPath . $vendor . DIRECTORY_SEPARATOR . $name
+            );
+
+        if( \Flysap\Support\is_folder_empty($fullPath . $vendor) )
+            \Flysap\Support\remove_paths(
+                $fullPath . $vendor
+            );
+
+        return $this;
+    }
 
     /**
      * Get storage path .
