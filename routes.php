@@ -39,9 +39,8 @@ Route::group(['prefix' => 'module-manager'], function() {
      * Route for remove module .
      *
      */
-    Route::get('remove/{module}', function() {
-        $service = app(ModuleServiceContract::class);
-
-        return $service->remove();
-    });
+    Route::get('remove/{module}', ['as' => 'module-remove', function($module) {
+        return app(ModuleServiceContract::class)
+            ->remove($module);
+    }]);
 });

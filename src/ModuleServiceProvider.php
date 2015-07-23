@@ -34,23 +34,23 @@ class ModuleServiceProvider extends ServiceProvider {
         });
 
         /** Module uploader . */
-        $this->app->singleton('module-uploader', function() {
-           return new ModuleUploader(
-               new Filesystem(), new Finder()
+        $this->app->singleton('module-manager', function() {
+           return new ModuleManager(
+               new Finder()
            );
         });
 
         /** Register caching module . */
         $this->app->singleton('module-caching', function() {
             return new ModulesCaching(
-                new Finder(), new Filesystem()
+                new Finder()
             );
         });
 
         /** Register module manager service layer . */
         $this->app->singleton(ModuleServiceContract::class, function($app) {
             return new ModuleService(
-                $app['module-caching'], $app['module-uploader']
+                $app['module-caching'], $app['module-manager']
             );
         });
 
@@ -76,7 +76,7 @@ class ModuleServiceProvider extends ServiceProvider {
      */
     protected function loadConfiguration() {
         $array = Yaml::parse(file_get_contents(
-            __DIR__ . '/../resources/configuration/general.yaml'
+            __DIR__ . '/../configuration/general.yaml'
         ));
 
         $config = $this->app['config']->get('module-manager', []);
@@ -90,7 +90,7 @@ class ModuleServiceProvider extends ServiceProvider {
      * Load views .
      */
     protected function loadViews() {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'module-manager');
+        $this->loadViewsFrom(__DIR__.'/../views', 'module-manager');
 
         return $this;
     }

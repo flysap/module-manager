@@ -25,5 +25,5 @@ interface ModuleServiceContract {
      *
      * @return mixed
      */
-    public function remove();
+    public function remove($module);
 }

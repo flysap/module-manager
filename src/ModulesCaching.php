@@ -4,7 +4,6 @@ namespace Flysap\ModuleManager;
 
 use Flysap\ModuleManager\Exceptions\ModuleUploaderException;
 use Illuminate\Contracts\Support\Arrayable;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 class ModulesCaching implements Arrayable {
@@ -12,19 +11,13 @@ class ModulesCaching implements Arrayable {
     const CACHE_FILE = 'modules.json';
 
     /**
-     * @var Finder
+     * @var
      */
     private $finder;
 
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    public function __construct(Finder $finder, Filesystem $filesystem) {
+    public function __construct(Finder $finder) {
 
         $this->finder = $finder;
-        $this->filesystem = $filesystem;
     }
 
     /**
@@ -35,13 +28,10 @@ class ModulesCaching implements Arrayable {
 
         $fullCachePath = $this->getCachePath();
 
-        if(! $this->filesystem->exists( $fullCachePath))
-            $this->filesystem->mkdir(
-                $fullCachePath
-            );
+        if(! \Flysap\Support\is_path_exists($fullCachePath))
+            \Flysap\Support\mk_path($fullCachePath);
 
-        $this->filesystem
-            ->dumpFile($fullCachePath . DIRECTORY_SEPARATOR . self::CACHE_FILE, json_encode($modules));
+        \Flysap\Support\dump_file($fullCachePath . DIRECTORY_SEPARATOR . self::CACHE_FILE, json_encode($modules));
 
         return $this;
     }
@@ -55,8 +45,8 @@ class ModulesCaching implements Arrayable {
     public function clear() {
         $fullCachePath = $this->getCachePath();
 
-        if( $this->filesystem->exists( $fullCachePath))
-            $this->filesystem->remove([
+        if( \Flysap\Support\is_path_exists($fullCachePath) )
+            \Flysap\Support\remove_paths([
                 $fullCachePath . DIRECTORY_SEPARATOR . self::CACHE_FILE
             ]);
 
@@ -73,7 +63,7 @@ class ModulesCaching implements Arrayable {
     public function toArray(array $modules = array()) {
         $fullCachePath = $this->getCachePath(true);
 
-        if( ! $this->filesystem->exists( $fullCachePath . DIRECTORY_SEPARATOR . self::CACHE_FILE ))
+        if( ! \Flysap\Support\is_path_exists($fullCachePath . DIRECTORY_SEPARATOR . self::CACHE_FILE))
             $this->flush();
 
         $cache = file_get_contents(
@@ -91,10 +81,11 @@ class ModulesCaching implements Arrayable {
     /**
      * Find modules configuration files .
      *
+     * @param array $keys
      * @return array
      * @throws ModuleUploaderException
      */
-    protected function findModulesConfig() {
+    public function findModulesConfig($keys = array()) {
         $name     = '/module.(\w{1,4})$/';
 
         $fullPath = $this->getStoragePath(true);
@@ -118,7 +109,10 @@ class ModulesCaching implements Arrayable {
                 $modules[$module['name']] = $module;
         }
 
-        return $modules;
+        if(! is_array($keys))
+            $keys = (array)$keys;
+
+        return array_only($modules, $keys ? $keys : array_keys($modules));
     }
 
     /**

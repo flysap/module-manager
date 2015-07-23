@@ -8,18 +8,18 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ModuleService implements ModuleServiceContract {
 
     /**
-     * @var ModuleUploader
-     */
-    private $moduleUploader;
-
-    /**
      * @var ModulesCaching
      */
     private $modulesCaching;
 
-    public function __construct(ModulesCaching $modulesCaching, ModuleUploader $moduleUploader) {
-        $this->moduleUploader = $moduleUploader;
+    /**
+     * @var ModuleManager
+     */
+    private $moduleManager;
+
+    public function __construct(ModulesCaching $modulesCaching, ModuleManager $moduleManager) {
         $this->modulesCaching = $modulesCaching;
+        $this->moduleManager = $moduleManager;
     }
 
     /**
@@ -30,7 +30,7 @@ class ModuleService implements ModuleServiceContract {
      * @throws Exceptions\ModuleUploaderException
      */
     public function install(UploadedFile $module) {
-        if( $configuration = $this->moduleUploader
+        if( $configuration = $this->moduleManager
             ->upload($module) ) {
 
             $this->modulesCaching
@@ -52,10 +52,18 @@ class ModuleService implements ModuleServiceContract {
     /**
      * Remove module ..
      *
+     * @param $module
      * @return mixed
      */
-    public function remove() {
-        // TODO: Implement remove() method.
+    public function remove($module) {
+        $this->moduleManager
+            ->remove($module);
+
+        $this->modulesCaching
+            ->flush();
+
+        return redirect()
+            ->back();
     }
 
     /**
