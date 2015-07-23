@@ -6,6 +6,7 @@ use Flysap\ModuleManager\Exceptions\ModuleUploaderException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use ZipArchive;
+use Flysap\Support;
 
 /**
  * Module uploader processing ..
@@ -81,8 +82,8 @@ class ModuleManager {
      */
     protected function extract($module, $path = null) {
         /** Check if path exists, other case create one . */
-        if (! \Flysap\Support\is_path_exists($path) )
-            \Flysap\Support\mk_path($path);
+        if (! Support\is_path_exists($path) )
+            Support\mk_path($path);
 
         $archiver = $this->getArchiver();
         $archiver->open($module);
@@ -108,13 +109,13 @@ class ModuleManager {
 
         $fullPath = app_path('../' . $path . DIRECTORY_SEPARATOR);
 
-        if( \Flysap\Support\is_path_exists($fullPath . $vendor . DIRECTORY_SEPARATOR . $name) )
-            \Flysap\Support\remove_paths(
+        if( Support\is_path_exists($fullPath . $vendor . DIRECTORY_SEPARATOR . $name) )
+            Support\remove_paths(
                 $fullPath . $vendor . DIRECTORY_SEPARATOR . $name
             );
 
-        if( \Flysap\Support\is_folder_empty($fullPath . $vendor) )
-            \Flysap\Support\remove_paths(
+        if( Support\is_folder_empty($fullPath . $vendor) )
+            Support\remove_paths(
                 $fullPath . $vendor
             );
 
