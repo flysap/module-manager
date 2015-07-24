@@ -81,14 +81,19 @@ class ModulesCaching implements Arrayable {
     /**
      * Find modules configuration files .
      *
+     * @param null $paths
      * @param array $keys
      * @return array
      * @throws ModuleUploaderException
      */
-    public function findModulesConfig($keys = array()) {
+    public function findModulesConfig($paths = null, $keys = array()) {
         $name     = '/module.(\w{1,4})$/';
 
-        $fullPath = $this->getStoragePath(true);
+        if( is_null($paths) )
+            $paths = $this->getStoragePath(true);
+
+        if(! is_array($paths))
+            $paths = (array)$paths;
 
         $modules = [];
         $finder  = $this->finder;
@@ -96,18 +101,20 @@ class ModulesCaching implements Arrayable {
         $finder->name($name)
             ->depth('< 3');
 
-        foreach ($finder->in($fullPath) as $file) {
+        array_walk($paths, function($path) use(& $finder, & $modules) {
+            foreach ($finder->in($path) as $file) {
 
-            $parser = ParserFactory::factory(
-                $file->getExtension()
-            );
+                $parser = ParserFactory::factory(
+                    $file->getExtension()
+                );
 
-            $module = $parser
-                ->parse( $file->getContents() );
+                $module = $parser
+                    ->parse( $file->getContents() );
 
-            if( isset($module['name']) )
-                $modules[$module['name']] = $module;
-        }
+                if( isset($module['name']) )
+                    $modules[$module['name']] = $module;
+            }
+        });
 
         if(! is_array($keys))
             $keys = (array)$keys;
