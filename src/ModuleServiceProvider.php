@@ -19,6 +19,10 @@ class ModuleServiceProvider extends ServiceProvider {
         $this->loadRoutes()
             ->loadConfiguration()
             ->loadViews();
+
+        view()->share('total_modules', count(
+            app('module-caching')->toArray()
+        ));
     }
 
     /**
