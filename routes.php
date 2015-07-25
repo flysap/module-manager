@@ -32,7 +32,9 @@ Route::group(['prefix' => 'module-manager'], function() {
 
         $modules = $service->modules();
 
-        return view('module-manager::lists', ['modules' => $modules]);
+        return view('theme-manager::lists', ['data' => $modules, 'fields' => [
+            'Name','Description','Version'
+        ]]);
     }]);
 
     /**

@@ -3,6 +3,7 @@
     "description": "SMG",
     "require": {
         "flysap/administrator": "dev-master",
+        "flysap/users": "dev-master",
         "laravel/framework": "~5.1",
         "symfony/filesystem": "~2.7",
         "symfony/finder": "~2.7",
