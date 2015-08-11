@@ -23,19 +23,25 @@ Route::group(['prefix' => 'module-manager'], function() {
     }]);
 
     Route::get('lists/{page?}', ['as' => 'module-lists', function() {
+
         $service = app(ModuleServiceContract::class);
 
         return $service->lists();
+
     }]);
 
     Route::get('edit/{module}', ['as' => 'module-edit', function($module) {
+
         $service = app(ModuleServiceContract::class);
 
         return $service->edit($module);
-    }]);
+
+    }])->where(['module' => "^(.)*"]);
 
     Route::get('remove/{module}', ['as' => 'module-remove', function($module) {
+
         return app(ModuleServiceContract::class)
             ->remove($module);
-    }]);
+
+    }])->where(['module' => "^(.)*"]);
 });
