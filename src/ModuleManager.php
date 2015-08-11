@@ -8,12 +8,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use ZipArchive;
 use Flysap\Support;
 
-/**
- * Module uploader processing ..
- *
- * Class ModuleUploader
- * @package Flysap\ModuleManger
- */
 class ModuleManager {
 
     /**
@@ -103,20 +97,11 @@ class ModuleManager {
      * @throws ModuleUploaderException
      */
     public function remove($module) {
-        list($vendor, $name) = explode('-', $module);
+        $fullPath = $this->getModuleFullPath($module);
 
-        $path = $this->getStoragePath();
-
-        $fullPath = app_path('../' . $path . DIRECTORY_SEPARATOR);
-
-        if( Support\is_path_exists($fullPath . $vendor . DIRECTORY_SEPARATOR . $name) )
+        if( Support\is_path_exists($fullPath) )
             Support\remove_paths(
-                $fullPath . $vendor . DIRECTORY_SEPARATOR . $name
-            );
-
-        if( Support\is_folder_empty($fullPath . $vendor) )
-            Support\remove_paths(
-                $fullPath . $vendor
+                $fullPath
             );
 
         return $this;
@@ -128,7 +113,7 @@ class ModuleManager {
      * @return mixed
      * @throws ModuleUploaderException
      */
-    protected function getStoragePath() {
+    public function getStoragePath() {
         $path = config('module-manager.module_path');
 
         if (! $path || $path == '')
@@ -140,12 +125,29 @@ class ModuleManager {
     }
 
     /**
+     * Get module full path .
+     *
+     * @param $module
+     * @return string
+     * @throws ModuleUploaderException
+     */
+    public function getModuleFullPath($module) {
+        list($vendor, $name) = explode('/', $module);
+
+        $path = $this->getStoragePath();
+
+        $fullPath = app_path('../' . $path . DIRECTORY_SEPARATOR);
+
+        return $fullPath . $vendor . DIRECTORY_SEPARATOR . $name;
+    }
+
+    /**
      * Get configuration file .
      *
      * @param UploadedFile $module
      * @return mixed
      */
-    protected function getConfiguration(UploadedFile $module) {
+    public function getConfiguration(UploadedFile $module) {
         $archiver = $this->getArchiver();
 
         if ($archiver->open($module)) {
