@@ -6,6 +6,7 @@ use Flysap\ModuleManager\Exceptions\ModuleUploaderException;
 use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\Finder\Finder;
 use Flysap\Support;
+
 class ModulesCaching implements Arrayable {
 
     const CACHE_FILE = 'modules.json';

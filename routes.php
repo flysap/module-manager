@@ -5,9 +5,6 @@ use Illuminate\Http\Request;
 
 Route::group(['prefix' => 'module-manager'], function() {
 
-    /**
-     * Route for module installation
-     */
     Route::match(['post', 'get'], '/upload', ['as' => 'module-upload', function(Request $request) {
         $service = app(ModuleServiceContract::class);
 
@@ -24,23 +21,20 @@ Route::group(['prefix' => 'module-manager'], function() {
         return view('module-manager::upload');
     }]);
 
-    /**
-     * Route for lists module ..
-     */
     Route::get('lists/{page?}', ['as' => 'module-lists', function() {
         $service = app(ModuleServiceContract::class);
 
         $modules = $service->modules();
 
-        return view('theme-manager::lists', ['data' => $modules, 'fields' => [
+        return view('module-manager::lists', ['data' => $modules, 'fields' => [
             'Name','Description','Version'
         ]]);
     }]);
 
-    /**
-     * Route for remove module .
-     *
-     */
+    Route::get('edit/{module}', ['as' => 'module-edit', function() {
+
+    }]);
+
     Route::get('remove/{module}', ['as' => 'module-remove', function($module) {
         return app(ModuleServiceContract::class)
             ->remove($module);

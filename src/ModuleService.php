@@ -40,6 +40,10 @@ class ModuleService implements ModuleServiceContract {
         }
     }
 
+    public function edit($module) {
+
+    }
+
     /**
      * Upgrade module .
      *
