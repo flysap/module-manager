@@ -9,11 +9,16 @@
       {
         "type": "git",
         "url": "https://github.com/flysap/table-manager"
+      },
+      {
+        "type": "git",
+        "url": "https://github.com/flysap/file-manager"
       }
     ],
     "require": {
         "flysap/administrator": "dev-master",
         "flysap/table-manager": "dev-master",
+        "flysap/file-manager": "dev-master",
         "flysap/users": "dev-master",
         "laravel/framework": "~5.1",
         "symfony/filesystem": "~2.7",
