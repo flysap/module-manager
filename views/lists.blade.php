@@ -18,7 +18,7 @@
 
             &nbsp;
 
-            {{_('Module Manager')}}  <small>{{_("manage your modukes easy")}}</small>
+            {{_('Module Manager')}}  <small>{{_("manage your modules easy")}}</small>
         </h1>
 
         <ol class="breadcrumb">
