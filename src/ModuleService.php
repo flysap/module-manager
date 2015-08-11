@@ -29,7 +29,14 @@ class ModuleService implements ModuleServiceContract {
     }
 
     public function edit($module) {
+        list($vendor, $name) = explode('/', $module);
 
+        $path = $this->moduleManager
+            ->getStoragePath();
+
+        $pathModule = $path . DIRECTORY_SEPARATOR . $vendor . DIRECTORY_SEPARATOR . $name;
+
+        return view('module-manager::edit', compact('pathModule'));
     }
 
     public function upgrade() {
