@@ -11,12 +11,10 @@
                     <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="/module-manager/upload">{{_('Install')}}</a></li>
+                    <li><a href="{{route('module-upload')}}">{{_('Install')}}</a></li>
                 </ul>
             </div>
-
             &nbsp;
-
             {{_('Module Manager')}}  <small>{{_("manage your modules easy")}}</small>
         </h1>
 
@@ -33,25 +31,34 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <div class="box-header">
-                        <h3 class="box-title">Data Table With Full Features</h3>
-                    </div><!-- /.box-header -->
-                    <div class="box-body">
-                        <div style="float: left; width: 82%">
-                            {!! Flysap\FileManager\editFile($pathModule . '/module.json', ['editor_var' => 'coreEditor']) !!}
-                            <br /><input class="btn btn-flat js-update-file" type="button" value="{{ _('Update file') }}">
-                        </div>
 
-                        <div style="margin-left: 83%">
-                            <div class="form-group">
-                                <label>{{_("Select file")}}</label>
-                                {!! Flysap\FileManager\listFiles($pathModule, 'select', ['active' => 'module.json', 'class' => 'form-control']) !!}
-                            </div>
-                            <input type="button" class="btn btn-flat js-load-file" value="{{ _('Load file') }}">
-                        </div>
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#tab_1" data-toggle="tab">Tab 1</a></li>
+                            <li><a href="#tab_2" data-toggle="tab" class="editor">Tab 2</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab_1">
+                               1
+                            </div><!-- /.tab-pane -->
+                            <div class="tab-pane" id="tab_2">
+                                <div style="float: left; width: 82%">
+                                    {!! Flysap\FileManager\editFile($pathModule . '/module.json', ['on_click' => '.editor', 'editor_var' => 'coreEditor']) !!}
+                                    <br /><input class="btn btn-flat js-update-file" type="button" value="{{ _('Update file') }}">
+                                </div>
 
-                        <div class="clearfix"></div>
-                    </div><!-- /.box-body -->
+                                <div style="margin-left: 83%">
+                                    <div class="form-group">
+                                        <label>{{_("Select file")}}</label>
+                                        {!! Flysap\FileManager\listFiles($pathModule, 'select', ['active' => 'module.json', 'class' => 'form-control']) !!}
+                                    </div>
+                                    <input type="button" class="btn btn-flat js-load-file" value="{{ _('Load file') }}">
+                                </div>
+
+                                <div class="clearfix"></div>
+                            </div><!-- /.tab-pane -->
+                        </div><!-- /.tab-content -->
+                    </div><!-- nav-tabs-custom -->
                 </div><!-- /.box -->
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -59,7 +66,6 @@
     </section><!-- /.content -->
 
     <script type="text/javascript">
-
         /**
          * Update file .
          */
