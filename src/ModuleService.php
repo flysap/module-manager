@@ -58,7 +58,7 @@ class ModuleService implements ModuleServiceContract {
         $modules = $this->modulesCaching
             ->toArray();
 
-        $table = TableManager\table('Collection', array(
+        $table = TableManager\table(array(
             'columns' => array('name' => ['closure' => function($value) {
 
                 $edit = route('module-edit', ['module' => $value]);
@@ -75,7 +75,7 @@ HTML;
 
             }],'description','version'),
             'rows'    => $modules
-        ), ['class' => 'table table-bordered table-striped dataTable']);
+        ), 'collection', ['class' => 'table table-bordered table-striped dataTable']);
 
         return view('module-manager::lists', compact('table'));
     }
