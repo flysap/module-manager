@@ -4,7 +4,7 @@
     "repositories": [
       {
         "type": "git",
-        "url": "https://github.com/flysap/administrator"
+        "url": "https://github.com/flysap/application"
       },
       {
         "type": "git",
@@ -16,7 +16,7 @@
       }
     ],
     "require": {
-        "flysap/administrator": "dev-master",
+        "flysap/application": "dev-master",
         "flysap/table-manager": "dev-master",
         "flysap/file-manager": "dev-master",
         "flysap/users": "dev-master",
