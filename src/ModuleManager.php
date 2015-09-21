@@ -106,11 +106,6 @@ class ModuleManager {
     public function getStoragePath() {
         $path = config('module-manager.module_path');
 
-        if (! $path || $path == '')
-            throw new ModuleUploaderException(
-                _("Cannot fine storage path for modules.")
-            );
-
         return $path;
     }
 
