@@ -55,7 +55,7 @@ class ModuleService {
 
     public function lists() {
         $modules = $this->cacheManager
-            ->getModules();
+            ->findModules();
 
         $table = TableManager\table(array(
             'columns' => array('name' => ['closure' => function($value) {
