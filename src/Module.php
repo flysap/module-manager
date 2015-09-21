@@ -80,4 +80,14 @@ class Module {
     public function isDisabled() {
         return isset($this->attributes['disabled']);
     }
+
+
+    /**
+     * Get menu array .
+     *
+     * @return string
+     */
+    public function getMenu() {
+        return isset($this->attributes['menu']) ? $this->attributes['menu'] : '';
+    }
 }
