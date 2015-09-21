@@ -24,6 +24,7 @@ class CacheManager {
 
     public function __construct() {
         $this->finder =new Finder;
+        $this->setModules();
     }
 
 
