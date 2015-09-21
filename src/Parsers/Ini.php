@@ -2,9 +2,9 @@
 
 namespace Flysap\ModuleManager\Parsers;
 
-use Flysap\ModuleManager\Contracts\ConfigParserContract;
+use Flysap\ModuleManager\Parsable;
 
-class Ini implements ConfigParserContract {
+class Ini implements Parsable {
 
     /**
      * Parse file ..
