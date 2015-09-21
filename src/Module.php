@@ -56,7 +56,7 @@ class Module {
      * @param callable $register
      */
     public function registerAutoloaders($force = false, \Closure $register = null) {
-        $canRegister = ($this->isDisabled() && $force) ? true : true;
+        $canRegister = ($this->isDisabled() && $force) ? true : ($this->isDisabled()) ? false : true;
 
         if($canRegister) {
             $autoloaders = $this->getAutoloaders();
