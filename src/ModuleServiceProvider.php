@@ -43,7 +43,7 @@ class ModuleServiceProvider extends ServiceProvider {
 
 
         /** Register module manager service layer . */
-        $this->app->singleton(ModuleServiceContract::class, function($app) {
+        $this->app->singleton('module-service', function($app) {
             return new ModuleService(
                 $app['module-caching'], $app['module-manager']
             );

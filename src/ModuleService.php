@@ -2,11 +2,10 @@
 
 namespace Flysap\ModuleManager;
 
-use Flysap\ModuleManager\Contracts\ModuleServiceContract;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Flysap\TableManager;
 
-class ModuleService implements ModuleServiceContract {
+class ModuleService {
 
     private $modulesCaching;
 
