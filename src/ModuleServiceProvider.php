@@ -34,16 +34,21 @@ class ModuleServiceProvider extends ServiceProvider {
         /** Module uploader . */
         $this->app->singleton('module-manager', ModuleManager::class);
 
+        /** Register caching module . */
+        $this->app->singleton('module-cache-manager', CacheManager::class);
 
-        $modules = (new CacheManager)
+
+        /**
+         * There will be register all modules autoloaders . It is located in register function because
+         *  autoloaders can be any service provider class so they must be registered before boot method .
+         *
+         */
+        $modules = app('module-cache-manager')
             ->getModules();
 
         array_walk($modules, function(Module $module) {
-           $module->registerAutoloaders();
+            $module->registerAutoloaders();
         });
-
-        /** Register caching module . */
-        $this->app->singleton('module-cache-manager', CacheManager::class);
 
         /** Register module manager service layer . */
         $this->app->singleton('module-service', function($app) {

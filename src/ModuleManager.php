@@ -32,18 +32,15 @@ class ModuleManager {
         if (! $extension = $module->guessClientExtension())
             $extension = $module->getClientOriginalExtension();
 
-
         if (! in_array($extension, $this->extensions))
             throw new ModuleUploaderException(
                 _('Invalid module format.')
             );
 
-
         if(! $configuration = $this->getConfiguration($module))
             throw new ModuleUploaderException(
                 _("Nof found module config file")
             );
-
 
         $path = config('module-manager.module_path') . DIRECTORY_SEPARATOR . $configuration['name'];
 
