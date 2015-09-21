@@ -6,6 +6,8 @@ use Flysap\ModuleManager\Exceptions\ModuleUploaderException;
 use Symfony\Component\Finder\Finder;
 use Flysap\Support;
 
+#@todo it have to be refactored.. cache manager .
+
 class CacheManager {
 
     const CACHE_FILE = 'modules.json';
@@ -32,6 +34,12 @@ class CacheManager {
      * @return $this
      */
     public function setModules(array $modules = array()) {
+        $foundModules = $this->findModules(null, $modules);
+
+        $modules = [];
+        foreach ($foundModules as $key => $module)
+            $modules[$key] = (new Module($module));
+
         $this->modules = $modules;
 
         return $this;
@@ -43,13 +51,7 @@ class CacheManager {
      * @return array
      */
     public function getModules() {
-        $foundModules = $this->findModules();
-
-        $modules = [];
-        foreach ($foundModules as $key => $module)
-            $modules[$key] = (new Module($module));
-
-        return $modules;
+        return $this->modules;
     }
 
 
@@ -114,7 +116,7 @@ class CacheManager {
      * @param array $only
      * @return array
      */
-    protected function findModules($paths = null, $only = array()) {
+    public function findModules($paths = null, $only = array()) {
         $name     = '/module.(\w{1,4})$/';
 
         if( is_null($paths) )
