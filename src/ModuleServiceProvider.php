@@ -2,11 +2,10 @@
 
 namespace Flysap\ModuleManager;
 
-use Flysap\ModuleManager\Contracts\ModuleRepositoryContract;
 use Flysap\ModuleManager\Contracts\ModuleServiceContract;
+use Flysap\TableManager\TableServiceProvider;
 use Illuminate\Support\ServiceProvider;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Yaml\Yaml;
+use Flysap\Support;
 
 class ModuleServiceProvider extends ServiceProvider {
 
@@ -29,20 +28,18 @@ class ModuleServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
+        $dependencies = [TableServiceProvider::class];
+
+        array_walk($dependencies, function($dependency) {
+            app()->register($dependency);
+        });
 
         /** Module uploader . */
-        $this->app->singleton('module-manager', function() {
-           return new ModuleManager(
-               new Finder()
-           );
-        });
+        $this->app->singleton('module-manager', ModuleManager::class);
 
         /** Register caching module . */
-        $this->app->singleton('module-caching', function() {
-            return new ModulesCaching(
-                new Finder()
-            );
-        });
+        $this->app->singleton('module-caching', ModulesCaching::class);
+
 
         /** Register module manager service layer . */
         $this->app->singleton(ModuleServiceContract::class, function($app) {
@@ -72,13 +69,9 @@ class ModuleServiceProvider extends ServiceProvider {
      * @return $this
      */
     protected function loadConfiguration() {
-        $array = Yaml::parse(file_get_contents(
-            __DIR__ . '/../configuration/general.yaml'
-        ));
-
-        $config = $this->app['config']->get('module-manager', []);
-
-        $this->app['config']->set('module-manager', array_merge($array, $config));
+        Support\set_config_from_yaml(
+            __DIR__ . '/../configuration/general.yaml' , 'module-manager'
+        );
 
         return $this;
     }
