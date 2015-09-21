@@ -3,7 +3,6 @@
 namespace Flysap\ModuleManager;
 
 use Flysap\FileManager\FileManagerServiceProvider;
-use Flysap\ModuleManager\Contracts\ModuleServiceContract;
 use Flysap\TableManager\TableServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Flysap\Support;
