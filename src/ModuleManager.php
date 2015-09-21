@@ -45,7 +45,7 @@ class ModuleManager {
             );
 
 
-        $path = $this->getStoragePath() . DIRECTORY_SEPARATOR . $configuration['name'];
+        $path = config('module-manager.module_path') . DIRECTORY_SEPARATOR . $configuration['name'];
 
         $this->extract(
             $module, app_path( '../' . $path)
@@ -97,17 +97,6 @@ class ModuleManager {
         return $this;
     }
 
-    /**
-     * Get storage path .
-     *
-     * @return mixed
-     * @throws ModuleUploaderException
-     */
-    public function getStoragePath() {
-        $path = config('module-manager.module_path');
-
-        return $path;
-    }
 
     /**
      * Get module full path .
@@ -119,7 +108,7 @@ class ModuleManager {
     public function getModuleFullPath($module) {
         list($vendor, $name) = explode('/', $module);
 
-        $path = $this->getStoragePath();
+        $path = config('module-manager.module_path');
 
         $fullPath = app_path('../' . $path . DIRECTORY_SEPARATOR);
 
