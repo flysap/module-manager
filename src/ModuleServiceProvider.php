@@ -15,11 +15,10 @@ class ModuleServiceProvider extends ServiceProvider {
      */
     public function boot() {
         $this->loadRoutes()
-            ->loadConfiguration()
             ->loadViews();
 
         view()->share('total_modules', count(
-            app('module-caching')->toArray()
+            app('module-cache-manager')->getModules()
         ));
     }
 
@@ -29,23 +28,28 @@ class ModuleServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        $dependencies = [TableServiceProvider::class, FileManagerServiceProvider::class];
+        $this->registerProviders();
 
-        array_walk($dependencies, function($dependency) {
-            app()->register($dependency);
-        });
+        $this->loadConfiguration();
 
         /** Module uploader . */
         $this->app->singleton('module-manager', ModuleManager::class);
 
-        /** Register caching module . */
-        $this->app->singleton('module-caching', ModulesCaching::class);
 
+        $modules = (new CacheManager)
+            ->getModules();
+
+        array_walk($modules, function(Module $module) {
+           $module->registerAutoloaders();
+        });
+
+        /** Register caching module . */
+        $this->app->singleton('module-cache-manager', CacheManager::class);
 
         /** Register module manager service layer . */
         $this->app->singleton('module-service', function($app) {
             return new ModuleService(
-                $app['module-caching'], $app['module-manager']
+                $app['module-cache-manager'], $app['module-manager']
             );
         });
 
@@ -84,5 +88,17 @@ class ModuleServiceProvider extends ServiceProvider {
         $this->loadViewsFrom(__DIR__.'/../views', 'module-manager');
 
         return $this;
+    }
+
+    /**
+     * There will be registered dependencies providers .
+     *
+     */
+    protected function registerProviders() {
+        $dependencies = [TableServiceProvider::class, FileManagerServiceProvider::class];
+
+        array_walk($dependencies, function($dependency) {
+            app()->register($dependency);
+        });
     }
 }
