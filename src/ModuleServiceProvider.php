@@ -2,6 +2,7 @@
 
 namespace Flysap\ModuleManager;
 
+use Flysap\FileManager\FileManagerServiceProvider;
 use Flysap\ModuleManager\Contracts\ModuleServiceContract;
 use Flysap\TableManager\TableServiceProvider;
 use Illuminate\Support\ServiceProvider;
@@ -28,7 +29,7 @@ class ModuleServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        $dependencies = [TableServiceProvider::class];
+        $dependencies = [TableServiceProvider::class, FileManagerServiceProvider::class];
 
         array_walk($dependencies, function($dependency) {
             app()->register($dependency);
