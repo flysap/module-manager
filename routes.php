@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 Route::group(['prefix' => 'module-manager'], function() {
 
     Route::match(['post', 'get'], '/upload', ['as' => 'module-upload', function(Request $request) {
-        $service = app(ModuleServiceContract::class);
+        $service = app('module-service');
 
         if( $request->method() == 'POST' ) {
             if( $service->install(
@@ -24,7 +24,7 @@ Route::group(['prefix' => 'module-manager'], function() {
 
     Route::get('lists/{page?}', ['as' => 'module-lists', function() {
 
-        $service = app(ModuleServiceContract::class);
+        $service = app('module-service');
 
         return $service->lists();
 
@@ -32,7 +32,7 @@ Route::group(['prefix' => 'module-manager'], function() {
 
     Route::get('edit/{module}', ['as' => 'module-edit', function($module) {
 
-        $service = app(ModuleServiceContract::class);
+        $service = app('module-service');
 
         return $service->edit($module);
 
@@ -40,7 +40,7 @@ Route::group(['prefix' => 'module-manager'], function() {
 
     Route::get('remove/{module}', ['as' => 'module-remove', function($module) {
 
-        return app(ModuleServiceContract::class)
+        return app('module-service')
             ->remove($module);
 
     }])->where(['module' => "^(.)*"]);
