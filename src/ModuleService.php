@@ -7,12 +7,12 @@ use Flysap\TableManager;
 
 class ModuleService {
 
-    private $modulesCaching;
+    protected $cacheManager;
 
-    private $moduleManager;
+    protected $moduleManager;
 
-    public function __construct(ModulesCaching $modulesCaching, ModuleManager $moduleManager) {
-        $this->modulesCaching = $modulesCaching;
+    public function __construct(CacheManager $cacheManager, ModuleManager $moduleManager) {
+        $this->cacheManager  = $cacheManager;
         $this->moduleManager = $moduleManager;
     }
 
@@ -20,7 +20,7 @@ class ModuleService {
         if( $configuration = $this->moduleManager
             ->upload($module) ) {
 
-            $this->modulesCaching
+            $this->cacheManager
                 ->flush();
 
             return true;
@@ -46,7 +46,7 @@ class ModuleService {
         $this->moduleManager
             ->remove($module);
 
-        $this->modulesCaching
+        $this->cacheManager
             ->flush();
 
         return redirect()
@@ -54,8 +54,8 @@ class ModuleService {
     }
 
     public function lists() {
-        $modules = $this->modulesCaching
-            ->toArray();
+        $modules = $this->cacheManager
+            ->getModules();
 
         $table = TableManager\table(array(
             'columns' => array('name' => ['closure' => function($value) {
