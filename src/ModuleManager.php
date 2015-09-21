@@ -3,17 +3,11 @@
 namespace Flysap\ModuleManager;
 
 use Flysap\ModuleManager\Exceptions\ModuleUploaderException;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use ZipArchive;
 use Flysap\Support;
 
 class ModuleManager {
-
-    /**
-     * @var \Symfony\Component\Finder\Finder
-     */
-    protected $finder;
 
     /**
      * @var array
@@ -24,10 +18,6 @@ class ModuleManager {
      * @var
      */
     protected $archiver;
-
-    public function __construct(Finder $finder) {
-        $this->finder = $finder;
-    }
 
     /**
      * Upload module to modules path ..
