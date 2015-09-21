@@ -16,9 +16,8 @@ class ModulesCaching implements Arrayable {
      */
     private $finder;
 
-    public function __construct(Finder $finder) {
-
-        $this->finder = $finder;
+    public function __construct() {
+        $this->finder =new Finder;
     }
 
     /**
