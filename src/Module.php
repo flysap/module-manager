@@ -90,4 +90,13 @@ class Module {
     public function getMenu() {
         return isset($this->attributes['menu']) ? $this->attributes['menu'] : '';
     }
+
+    /**
+     * Return attributes .
+     *
+     * @return array
+     */
+    public function toArray() {
+        return $this->attributes;
+    }
 }
