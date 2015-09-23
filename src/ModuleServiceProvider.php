@@ -16,6 +16,8 @@ class ModuleServiceProvider extends ServiceProvider {
         $this->loadRoutes()
             ->loadViews();
 
+        $this->registerMenu();
+
         view()->share('total_modules', count(
             app('module-cache-manager')->getModules()
         ));
@@ -92,6 +94,16 @@ class ModuleServiceProvider extends ServiceProvider {
         $this->loadViewsFrom(__DIR__.'/../views', 'module-manager');
 
         return $this;
+    }
+
+    /**
+     * Register menu .
+     *
+     */
+    protected function registerMenu() {
+        $menuManager = app('menu-manager');
+
+        $menuManager->addNamespace(__DIR__ . '/../', true);
     }
 
     /**

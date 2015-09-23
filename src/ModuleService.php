@@ -30,8 +30,7 @@ class ModuleService {
     public function edit($module) {
         list($vendor, $name) = explode('/', $module);
 
-        $path = $this->moduleManager
-            ->getStoragePath();
+        $path = config('module-manager.module_path');
 
         $pathModule = $path . DIRECTORY_SEPARATOR . $vendor . DIRECTORY_SEPARATOR . $name;
 
@@ -53,6 +52,9 @@ class ModuleService {
             ->back();
     }
 
+    /**
+     * @return \Illuminate\View\View
+     */
     public function lists() {
         $modules = $this->cacheManager
             ->findModules();
