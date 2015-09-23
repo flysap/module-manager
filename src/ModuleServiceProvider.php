@@ -103,7 +103,7 @@ class ModuleServiceProvider extends ServiceProvider {
     protected function registerMenu() {
         $menuManager = app('menu-manager');
 
-        $menuManager->addNamespace(__DIR__ . '/../', true);
+        $menuManager->addNamespace(realpath(__DIR__ . '/../'), true);
     }
 
     /**

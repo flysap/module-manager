@@ -15,15 +15,9 @@ class CacheManager {
     /**
      * @var
      */
-    private $finder;
-
-    /**
-     * @var
-     */
     protected $modules;
 
     public function __construct() {
-        $this->finder =new Finder;
         $this->setModules();
     }
 
@@ -121,20 +115,19 @@ class CacheManager {
         $name     = '/module.(\w{1,4})$/';
 
         if( is_null($paths) )
-            $paths = app_path('../' . config('module-manager.module_path'));
+            $paths = realpath(app_path('../' . config('module-manager.module_path')));
 
         if(! is_array($paths))
             $paths = (array)$paths;
 
         $modules = [];
-        $finder  = $this->finder;
+        $finder  = new Finder;
 
         $finder->name($name)
-            ->depth('< 3');
+            ->depth('<= 3');
 
-        array_walk($paths, function($path) use(& $finder, & $modules) {
+        foreach($paths as $path) {
             foreach ($finder->in($path) as $file) {
-
                 $parser = ParserFactory::factory(
                     $file->getExtension()
                 );
@@ -145,7 +138,7 @@ class CacheManager {
                 if( isset($module['name']) )
                     $modules[$module['name']] = $module;
             }
-        });
+        }
 
         if(! is_array($only))
             $only = (array)$only;
