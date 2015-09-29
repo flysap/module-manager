@@ -7,12 +7,12 @@
     {
       "section": "Module Manager",
       "label"  : "Install",
-      "href"   : "/module-manager/upload"
+      "href"   : "/admin/module-manager/upload"
     },
     {
       "section": "Module Manager",
       "label"  : "Modules  (:total_modules)",
-      "href"   : "/module-manager/lists"
+      "href"   : "/admin/module-manager/lists"
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 
-Route::group(['prefix' => 'module-manager'], function() {
+Route::group(['prefix' => 'admin/module-manager', 'middleware' => 'role:admin'], function() {
 
     Route::match(['post', 'get'], '/upload', ['as' => 'module-upload', function(Request $request) {
         $service = app('module-service');

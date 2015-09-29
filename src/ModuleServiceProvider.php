@@ -48,6 +48,7 @@ class ModuleServiceProvider extends ServiceProvider {
         $modules = app('module-cache-manager')
             ->getModules();
 
+        #@todo there is need to register autoloaders for generated modules.  ?? maybe ..)
         array_walk($modules, function(Module $module) {
             $module->registerAutoloaders();
         });
