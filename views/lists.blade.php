@@ -38,7 +38,7 @@
                     </div><!-- /.box-header -->
                     <div class="box-body">
                         {!! $table->render() !!}
-                        {!! \Flysap\TableManager\render_pagination($table) !!}
+                        {!! Parfumix\TableManager\render_pagination($table) !!}
                     </div><!-- /.box-body -->
                 </div><!-- /.box -->
             </div><!-- /.col -->

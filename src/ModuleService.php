@@ -3,7 +3,7 @@
 namespace Flysap\ModuleManager;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Flysap\TableManager;
+use Parfumix\TableManager;
 
 class ModuleService {
 

@@ -3,7 +3,7 @@
 namespace Flysap\ModuleManager;
 
 use Flysap\FileManager\FileManagerServiceProvider;
-use Flysap\TableManager\TableServiceProvider;
+use Parfumix\TableManager\TableServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Flysap\Support;
 

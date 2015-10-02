@@ -5,13 +5,13 @@
 
   "menu": [
     {
-      "section": "Module Manager",
+      "section": "Modules",
       "label"  : "Install",
       "href"   : "/admin/module-manager/upload"
     },
     {
-      "section": "Module Manager",
-      "label"  : "Modules  (:total_modules)",
+      "section": "Modules",
+      "label"  : "Installed  (:total_modules)",
       "href"   : "/admin/module-manager/lists"
     }
   ]
