@@ -132,6 +132,8 @@ class CacheManager {
                     $file->getExtension()
                 );
 
+                if(! $parser) continue;
+
                 $module = $parser
                     ->parse( $file->getContents() );
 
