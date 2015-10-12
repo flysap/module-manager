@@ -29,7 +29,7 @@ class ModuleServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        $this->registerProviders();
+        $this->registerPackageServices();
 
         $this->loadConfiguration();
 
@@ -39,6 +39,12 @@ class ModuleServiceProvider extends ServiceProvider {
         /** Register caching module . */
         $this->app->singleton('module-cache-manager', CacheManager::class);
 
+        /** Register module manager service layer . */
+        $this->app->singleton('module-service', function($app) {
+            return new ModuleService(
+                $app['module-cache-manager'], $app['module-manager']
+            );
+        });
 
         /**
          * There will be register all modules autoloaders . It is located in register function because
@@ -48,18 +54,9 @@ class ModuleServiceProvider extends ServiceProvider {
         $modules = app('module-cache-manager')
             ->getModules();
 
-        #@todo there is need to register autoloaders for generated modules.  ?? maybe ..)
         array_walk($modules, function(Module $module) {
-            $module->registerAutoloaders();
+            $module->registerAutoloader();
         });
-
-        /** Register module manager service layer . */
-        $this->app->singleton('module-service', function($app) {
-            return new ModuleService(
-                $app['module-cache-manager'], $app['module-manager']
-            );
-        });
-
     }
 
     /**
@@ -111,8 +108,11 @@ class ModuleServiceProvider extends ServiceProvider {
      * There will be registered dependencies providers .
      *
      */
-    protected function registerProviders() {
-        $dependencies = [TableServiceProvider::class, FileManagerServiceProvider::class];
+    protected function registerPackageServices() {
+        $dependencies = [
+            TableServiceProvider::class,
+            FileManagerServiceProvider::class
+        ];
 
         array_walk($dependencies, function($dependency) {
             app()->register($dependency);
