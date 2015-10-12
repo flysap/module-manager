@@ -46,20 +46,28 @@ class Module {
      *
      * @return string
      */
-    public function getAutoloaders() {
+    public function getAutoloader() {
         return isset($this->attributes['autoload']) ? $this->attributes['autoload'] : '';
     }
 
+    /**
+     * Check if has autoloader .
+     *
+     * @return bool
+     */
+    public function hasAutoloader() {
+        return isset($this->attributes['autoload']);
+    }
 
     /**
      * @param bool $force
      * @param callable $register
      */
-    public function registerAutoloaders($force = false, \Closure $register = null) {
+    public function registerAutoloader($force = false, \Closure $register = null) {
         $canRegister = ($this->isDisabled() && $force) ? true : ($this->isDisabled()) ? false : true;
 
-        if($canRegister) {
-            $autoloaders = (array)$this->getAutoloaders();
+        if($canRegister && $this->hasAutoloader()) {
+            $autoloaders = (array)$this->getAutoloader();
 
             array_walk($autoloaders, function($autoloader) use($register) {
                 if( empty($autoloader))
