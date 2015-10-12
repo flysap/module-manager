@@ -43,7 +43,6 @@ class ModuleService {
             /** If there is a seed files we have to run them  */
             Support\artisan('db:seed');
 
-
             /** Refresh cache files . */
             $this->cacheManager
                 ->flush();

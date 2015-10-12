@@ -23,7 +23,7 @@ class ModuleManager {
      * Upload module to modules path ..
      *
      * @param UploadedFile $module
-     * @return \Symfony\Component\HttpFoundation\File\File
+     * @return Module
      * @throws ModuleUploaderException
      */
     public function upload(UploadedFile $module) {
