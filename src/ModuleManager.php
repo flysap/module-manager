@@ -44,13 +44,16 @@ class ModuleManager {
 
         $path = config('module-manager.module_path') . DIRECTORY_SEPARATOR . $configuration['name'];
 
+        if( Support\is_path_exists(app_path($path)) )
+            throw new ModuleUploaderException(
+                _('Module already exists.')
+            );
+
         $this->extract(
             $module, app_path( '../' . $path)
         );
 
-        return array_merge(
-            ['path' => $path], $configuration
-        );
+        return (new Module($configuration));
     }
 
     /**
