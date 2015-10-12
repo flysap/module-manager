@@ -4,6 +4,7 @@ namespace Flysap\ModuleManager;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Parfumix\TableManager;
+use Flysap\Support;
 
 class ModuleService {
 
@@ -16,10 +17,34 @@ class ModuleService {
         $this->moduleManager = $moduleManager;
     }
 
-    public function install(UploadedFile $module) {
-        if( $configuration = $this->moduleManager
-            ->upload($module) ) {
+    /**
+     * Install module .
+     *
+     * @param UploadedFile $file
+     * @return bool
+     * @throws Exceptions\ModuleUploaderException
+     */
+    public function install(UploadedFile $file) {
+        if( $module = $this->moduleManager->upload($file) ) {
 
+            if( $module->hasAutoloader()  )
+                Support\artisan('vendor:publish', [
+                    '--provider' => $module->getAutoloader()
+                ]);
+
+            /** By default we have to run main migrations which are important . */
+            Support\artisan('migrate');
+
+            /** We need to run module migration */
+            Support\artisan('migrate', [
+                '--path' => app_path(config('module-manager.module_path') . DIRECTORY_SEPARATOR . $module->getName() . DIRECTORY_SEPARATOR . 'migrations')
+            ]);
+
+            /** If there is a seed files we have to run them  */
+            Support\artisan('db:seed');
+
+
+            /** Refresh cache files . */
             $this->cacheManager
                 ->flush();
 
