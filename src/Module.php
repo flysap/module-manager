@@ -59,15 +59,16 @@ class Module {
         $canRegister = ($this->isDisabled() && $force) ? true : ($this->isDisabled()) ? false : true;
 
         if($canRegister) {
-            $autoloaders = $this->getAutoloaders();
+            $autoloaders = (array)$this->getAutoloaders();
 
             array_walk($autoloaders, function($autoloader) use($register) {
-                if( class_exists($autoloader) ) {
-                    if( ! is_null($register) )
-                        $register($autoloader);
-                    else
-                        app()->register($autoloader);
-                }
+                if( empty($autoloader))
+                    return false;
+
+                if( ! is_null($register) )
+                    $register($autoloader);
+                else
+                    app()->register($autoloader);
             });
         }
     }
