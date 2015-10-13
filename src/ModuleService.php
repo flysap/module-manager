@@ -27,18 +27,21 @@ class ModuleService {
     public function install(UploadedFile $file) {
         if( $module = $this->moduleManager->upload($file) ) {
 
-            if( $module->hasAutoloader()  )
+            /**
+             * When is installed it have to copy files to specific location
+             *  1. but for the first it have to check if module with that name already exists
+             *  2. it have to copy all the files to specific directory
+             *  3. it have publish all module assets like migrations or seeds
+             *  4. it have to run all the migrations and seeds if they exists .
+             */
+
+            if( $module->hasServiceProvider()  )
                 Support\artisan('vendor:publish', [
-                    '--provider' => $module->getAutoloader()
+                    '--provider' => $module->getServiceProvider()
                 ]);
 
             /** By default we have to run main migrations which are important . */
             Support\artisan('migrate');
-
-            /** We need to run module migration */
-            Support\artisan('migrate', [
-                '--path' => app_path(config('module-manager.module_path') . DIRECTORY_SEPARATOR . $module->getName() . DIRECTORY_SEPARATOR . 'migrations')
-            ]);
 
             /** If there is a seed files we have to run them  */
             Support\artisan('db:seed');
@@ -51,6 +54,12 @@ class ModuleService {
         }
     }
 
+    /**
+     * Edit module .
+     *
+     * @param $module
+     * @return \Illuminate\View\View
+     */
     public function edit($module) {
         list($vendor, $name) = explode('/', $module);
 
@@ -61,11 +70,34 @@ class ModuleService {
         return view('module-manager::edit', compact('pathModule'));
     }
 
-    public function upgrade() {
-        // TODO: Implement upgrade() method.
-    }
-
+    /**
+     * Remove module .
+     *
+     * @param $module
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function remove($module) {
+
+        /**
+         * Remove module have to delete module files and all the assets
+         *
+         *  1. it have to delete database migrations
+         *  2. it have to delete migration files
+         *  3. it have to delete seeds files
+         */
+
+        $allModules = $this->cacheManager->findModules();
+
+        if( isset($allModules[$module]) ) {
+            $module = new Module($allModules[$module]);
+
+            if( $path = $this->moduleManager->getModuleFullPath( $module->getName() ) ) {
+                if( Support\is_path_exists($path . DIRECTORY_SEPARATOR . 'migrations') ) {
+                    #@todo .
+                }
+            }
+        }
+
         $this->moduleManager
             ->remove($module);
 
@@ -77,6 +109,8 @@ class ModuleService {
     }
 
     /**
+     * Lists modules .
+     *
      * @return \Illuminate\View\View
      */
     public function lists() {
