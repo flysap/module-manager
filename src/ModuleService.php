@@ -99,7 +99,7 @@ class ModuleService {
         }
 
         $this->moduleManager
-            ->remove($module);
+            ->remove($module->getName());
 
         $this->cacheManager
             ->flush();
