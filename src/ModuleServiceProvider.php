@@ -55,7 +55,7 @@ class ModuleServiceProvider extends ServiceProvider {
             ->getModules();
 
         array_walk($modules, function(Module $module) {
-            $module->registerAutoloader();
+            $module->registerServiceProvider();
         });
     }
 
