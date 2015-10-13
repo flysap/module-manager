@@ -46,7 +46,7 @@ class Module {
      *
      * @return string
      */
-    public function getAutoloader() {
+    public function getServiceProvider() {
         return isset($this->attributes['autoload']) ? $this->attributes['autoload'] : '';
     }
 
@@ -55,7 +55,7 @@ class Module {
      *
      * @return bool
      */
-    public function hasAutoloader() {
+    public function hasServiceProvider() {
         return isset($this->attributes['autoload']);
     }
 
@@ -63,11 +63,11 @@ class Module {
      * @param bool $force
      * @param callable $register
      */
-    public function registerAutoloader($force = false, \Closure $register = null) {
+    public function registerServiceProvider($force = false, \Closure $register = null) {
         $canRegister = ($this->isDisabled() && $force) ? true : ($this->isDisabled()) ? false : true;
 
-        if($canRegister && $this->hasAutoloader()) {
-            $autoloaders = (array)$this->getAutoloader();
+        if($canRegister && $this->hasServiceProvider()) {
+            $autoloaders = (array)$this->getServiceProvider();
 
             array_walk($autoloaders, function($autoloader) use($register) {
                 if( empty($autoloader))
