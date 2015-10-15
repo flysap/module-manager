@@ -27,7 +27,7 @@ class ModuleServiceProvider extends ServiceProvider {
 
         /** Register modules widget . */
         app('widget-manager')->addWidget('modules', function() use($totalModules) {
-            return view('themes::widgets.uploads', ['value' => $totalModules]);
+            return view('themes::widgets.uploads', ['value' => $totalModules, 'title' => 'Modules']);
         });
     }
 

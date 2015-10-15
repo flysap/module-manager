@@ -77,15 +77,6 @@ class ModuleService {
      * @return \Illuminate\Http\RedirectResponse
      */
     public function remove($module) {
-
-        /**
-         * Remove module have to delete module files and all the assets
-         *
-         *  1. it have to delete database migrations
-         *  2. it have to delete migration files
-         *  3. it have to delete seeds files
-         */
-
         $allModules = $this->cacheManager->findModules();
 
         if( isset($allModules[$module]) ) {

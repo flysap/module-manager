@@ -11,7 +11,7 @@
                     <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="/module-manager/upload">{{_('Install')}}</a></li>
+                    <li><a href="{{route('module-upload')}}">{{_('Install')}}</a></li>
                 </ul>
             </div>
 
