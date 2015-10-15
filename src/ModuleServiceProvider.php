@@ -3,6 +3,7 @@
 namespace Flysap\ModuleManager;
 
 use Flysap\FileManager\FileManagerServiceProvider;
+use Flysap\ModuleManager\Widgets\ModulesWidget;
 use Parfumix\TableManager\TableServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Flysap\Support;
@@ -18,9 +19,16 @@ class ModuleServiceProvider extends ServiceProvider {
 
         $this->registerMenu();
 
-        view()->share('total_modules', count(
+        $totalModules = count(
             app('module-cache-manager')->getModules()
-        ));
+        );
+
+        view()->share('total_modules', $totalModules);
+
+        /** Register modules widget . */
+        app('widget-manager')->addWidget('modules', function() use($totalModules) {
+            return view('themes::widgets.uploads', ['value' => $totalModules]);
+        });
     }
 
     /**
