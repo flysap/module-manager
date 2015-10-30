@@ -35,20 +35,24 @@ class ModuleService {
              *  4. it have to run all the migrations and seeds if they exists .
              */
 
-            if( $module->hasServiceProvider()  )
+            /** Refresh cache files . */
+            $this->cacheManager
+                ->flush();
+
+            if( $module->hasServiceProvider() ) {
+                $module->registerServiceProvider();
+
                 Support\artisan('vendor:publish', [
-                    '--provider' => $module->getServiceProvider()
+                    #  '--provider' => $module->getServiceProvider(),
+                    '--tag' => ['migrations', 'seeds', 'config']
                 ]);
+            }
 
             /** By default we have to run main migrations which are important . */
             Support\artisan('migrate');
 
             /** If there is a seed files we have to run them  */
             Support\artisan('db:seed');
-
-            /** Refresh cache files . */
-            $this->cacheManager
-                ->flush();
 
             return true;
         }
